@@ -5,26 +5,24 @@ interface AppButtonProps extends ButtonProps {
   label: string;
 }
 
-export function SecondaryButton({ label, ...props }: AppButtonProps) {
+export default function ButtonSecondary({ label, ...props }: AppButtonProps) {
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       size="medium"
       {...props}
       sx={{
-        color: '#000000',
-        borderColor: '#000000',
-        textTransform: 'none',
+        color: '#ffffff',
+        bgcolor: 'var(--background-secondary)',
+        borderColor: 'var(--background-secondary)',
+        fontSize: '16px',
+        textTransform: 'uppercase',
         fontWeight: 500,
-        borderRadius: '8px',
+        borderRadius: '24px',
         px: 3,
         py: 1,
         '&:hover': {
-          backgroundColor: 'rgba(0, 0, 0, 0.04)',
-          borderColor: '#000000',
-        },
-        '&:active': {
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          opacity: 0.9,
         },
         '&.Mui-disabled': {
           borderColor: 'rgba(0, 0, 0, 0.12)',

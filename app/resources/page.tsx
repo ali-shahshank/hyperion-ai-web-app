@@ -1,4 +1,4 @@
-import Nav from '@/app/components/Nav';
+import Nav from '@/components/Nav';
 import Typography from '@mui/material/Typography';
 
 const page = () => {

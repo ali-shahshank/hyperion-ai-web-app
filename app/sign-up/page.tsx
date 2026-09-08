@@ -7,8 +7,8 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Footer from '@/app/components/footer';
-import Nav from '@/app/components/Nav';
+import Footer from '@/components/Footer';
+import Nav from '@/components/Nav';
 import { createClient } from '@/utils/supabase/client';
 
 const googleMark =

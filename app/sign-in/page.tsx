@@ -2,7 +2,7 @@
 import '../globals.css';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
-import Nav from '@/app/components/Nav';
+import Nav from '@/components/Nav';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';

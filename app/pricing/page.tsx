@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import Nav from '@/app/components/Nav';
+import Nav from '@/components/Nav';
 
 const page = () => {
   return (

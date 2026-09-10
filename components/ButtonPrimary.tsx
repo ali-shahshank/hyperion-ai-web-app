@@ -15,18 +15,7 @@ export default function ButtonPrimary({ label, ...props }: AppButtonProps) {
         bgcolor: 'var(--accent-primary)',
         color: '#ffffff',
         borderColor: 'var(--accent-primary)',
-        textTransform: 'uppercase',
-        fontSize: '16px',
-        fontWeight: 500,
         borderRadius: '24px',
-        '&:hover': {
-          opacity: 0.9,
-        },
-        '&:active': {},
-        '&.Mui-disabled': {
-          borderColor: 'rgba(0, 0, 0, 0.12)',
-          color: 'rgba(0, 0, 0, 0.38)',
-        },
         ...props.sx,
       }}
     >

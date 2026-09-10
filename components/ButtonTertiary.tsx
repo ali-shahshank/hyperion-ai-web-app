@@ -14,17 +14,7 @@ export default function ButtonTertiary({ label, ...props }: AppButtonProps) {
       sx={{
         color: 'var(--background-secondary)',
         borderColor: 'var(--background-secondary)',
-        fontSize: '16px',
-        textTransform: 'uppercase',
-        fontWeight: 500,
         borderRadius: '24px',
-        '&:hover': {
-          opacity: 0.9,
-        },
-        '&.Mui-disabled': {
-          borderColor: 'rgba(0, 0, 0, 0.12)',
-          color: 'rgba(0, 0, 0, 0.38)',
-        },
         ...props.sx,
       }}
     >

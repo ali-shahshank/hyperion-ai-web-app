@@ -15,6 +15,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AppDrawer from './Drawer';
 import ButtonPrimary from './ButtonPrimary';
 import ButtonTertiary from './ButtonTertiary';
+import ButtonStandard from './ButtonStandard';
 
 export interface Page {
   title: string;
@@ -104,9 +105,9 @@ export default function ResponsiveAppBar() {
               gap: 1,
             }}
           >
-            <ButtonTertiary
+            <ButtonStandard
               label={'Sign-in'}
-              href={'sign-in'}
+              href={'/sign-in'}
             />
             <ButtonPrimary
               label={'Get Started'}

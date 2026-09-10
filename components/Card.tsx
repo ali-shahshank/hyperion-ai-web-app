@@ -9,7 +9,7 @@ const Card = ({
   title,
   features,
 }: {
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   title: string;
   features: string[];
 }) => {

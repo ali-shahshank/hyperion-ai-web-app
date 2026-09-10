@@ -18,15 +18,9 @@ import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import Card from '@/components/Card';
 import ButtonPrimary from './../components/ButtonPrimary';
 
-interface CardProps {
-  icon: React.ReactNode;
-  title: string;
-  features: string[];
-}
-
 const CardData = [
   {
-    icon: <TextSnippetIcon />,
+    icon: TextSnippetIcon,
     title: 'Manage Documents',
     features: [
       'Compose accurate, on-brand documents',
@@ -35,7 +29,7 @@ const CardData = [
     ],
   },
   {
-    icon: <EmailIcon />,
+    icon: EmailIcon,
     title: 'Streamline your Inbox',
     features: [
       'Summarize emails in seconds',
@@ -44,7 +38,7 @@ const CardData = [
     ],
   },
   {
-    icon: <GroupsIcon />,
+    icon: GroupsIcon,
     title: 'Manage Documents',
     features: [
       'Auto-summarize calls and live sessions.',
@@ -53,7 +47,7 @@ const CardData = [
     ],
   },
   {
-    icon: <TableRowsIcon />,
+    icon: TableRowsIcon,
     title: 'Gain Valuable Insight',
     features: [
       'Extract data from Docs and Images',
@@ -62,7 +56,7 @@ const CardData = [
     ],
   },
   {
-    icon: <RepeatIcon />,
+    icon: RepeatIcon,
     title: 'Automate Repetitive Tasks',
     features: [
       'Convert emails into action items',
@@ -71,7 +65,7 @@ const CardData = [
     ],
   },
   {
-    icon: <DeviceHubIcon />,
+    icon: DeviceHubIcon,
     title: 'Connect Apps',
     features: [
       'Recap meetings from Zoom',
@@ -80,16 +74,6 @@ const CardData = [
     ],
   },
 ];
-
-const buttonSx = {
-  borderRadius: '24px',
-  px: '22px',
-  py: '8px',
-  fontSize: '16px',
-  fontWeight: 500,
-  letterSpacing: '0.46px',
-  textTransform: 'uppercase',
-};
 
 // Section heading component
 function SectionHeading({

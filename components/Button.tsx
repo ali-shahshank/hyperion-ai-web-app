@@ -5,22 +5,21 @@ interface AppButtonProps extends ButtonProps {
   label: string;
 }
 
-export default function ButtonTertiary({ label, ...props }: AppButtonProps) {
+export default function ButtonStandard({ label, ...props }: AppButtonProps) {
   return (
     <Button
-      variant="outlined"
       size="medium"
       {...props}
       sx={{
         color: 'var(--background-secondary)',
-        borderColor: 'var(--background-secondary)',
-        fontSize: '16px',
         textTransform: 'uppercase',
+        fontSize: '16px',
         fontWeight: 500,
         borderRadius: '24px',
         '&:hover': {
           opacity: 0.9,
         },
+        '&:active': {},
         '&.Mui-disabled': {
           borderColor: 'rgba(0, 0, 0, 0.12)',
           color: 'rgba(0, 0, 0, 0.38)',

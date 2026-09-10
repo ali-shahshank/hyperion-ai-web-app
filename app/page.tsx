@@ -19,14 +19,14 @@ import Card from '@/components/Card';
 import ButtonPrimary from './../components/ButtonPrimary';
 
 interface CardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   features: string[];
 }
 
 const CardData = [
   {
-    icon: 'TextSnippetIcon',
+    icon: <TextSnippetIcon />,
     title: 'Manage Documents',
     features: [
       'Compose accurate, on-brand documents',
@@ -34,51 +34,51 @@ const CardData = [
       'Summarize, edit and refine content',
     ],
   },
-  // {
-  //   icon: <EmailIcon />,
-  //   title: 'Streamline your Inbox',
-  //   features: [
-  //     'Summarize emails in seconds',
-  //     'Gain valuable insight at a glance',
-  //     'Edit, delete and draft new responses',
-  //   ],
-  // },
-  // {
-  //   icon: <GroupsIcon />,
-  //   title: 'Manage Documents',
-  //   features: [
-  //     'Auto-summarize calls and live sessions.',
-  //     'Document key insights and decision.',
-  //     'Generate clear, shareable action items.',
-  //   ],
-  // },
-  // {
-  //   icon: <TableRowsIcon />,
-  //   title: 'Gain Valuable Insight',
-  //   features: [
-  //     'Extract data from Docs and Images',
-  //     'Restructure and organize data.',
-  //     'Seamlessly analyze and export data',
-  //   ],
-  // },
-  // {
-  //   icon: <RepeatIcon />,
-  //   title: 'Automate Repetitive Tasks',
-  //   features: [
-  //     'Convert emails into action items',
-  //     'Turn meeting notes into task workflows',
-  //     'Eliminate time-consuming routines',
-  //   ],
-  // },
-  // {
-  //   icon: <DeviceHubIcon />,
-  //   title: 'Connect Apps',
-  //   features: [
-  //     'Recap meetings from Zoom',
-  //     'Document key insights and decision',
-  //     'Export and store data in Google Suite',
-  //   ],
-  // },
+  {
+    icon: <EmailIcon />,
+    title: 'Streamline your Inbox',
+    features: [
+      'Summarize emails in seconds',
+      'Gain valuable insight at a glance',
+      'Edit, delete and draft new responses',
+    ],
+  },
+  {
+    icon: <GroupsIcon />,
+    title: 'Manage Documents',
+    features: [
+      'Auto-summarize calls and live sessions.',
+      'Document key insights and decision.',
+      'Generate clear, shareable action items.',
+    ],
+  },
+  {
+    icon: <TableRowsIcon />,
+    title: 'Gain Valuable Insight',
+    features: [
+      'Extract data from Docs and Images',
+      'Restructure and organize data.',
+      'Seamlessly analyze and export data',
+    ],
+  },
+  {
+    icon: <RepeatIcon />,
+    title: 'Automate Repetitive Tasks',
+    features: [
+      'Convert emails into action items',
+      'Turn meeting notes into task workflows',
+      'Eliminate time-consuming routines',
+    ],
+  },
+  {
+    icon: <DeviceHubIcon />,
+    title: 'Connect Apps',
+    features: [
+      'Recap meetings from Zoom',
+      'Document key insights and decision',
+      'Export and store data in Google Suite',
+    ],
+  },
 ];
 
 const buttonSx = {
@@ -223,8 +223,10 @@ export default function HomePage() {
               width: '100%',
             }}
           >
-            <ButtonSecondary label={'Get Started'} />
-            <ButtonTertiary label={'Learn More'} />
+            <ButtonSecondary
+              label={'Get Started'}
+              href="/sign-up"
+            />
           </Stack>
         </Stack>
 

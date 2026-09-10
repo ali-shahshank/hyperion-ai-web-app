@@ -13,6 +13,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AppDrawer from './Drawer';
+import ButtonPrimary from './ButtonPrimary';
+import ButtonTertiary from './ButtonTertiary';
 
 export interface Page {
   title: string;
@@ -32,12 +34,12 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar
-      position="static"
+      position="relative"
       sx={{
-        boxShadow: 'none',
         p: 0,
-        m: 0,
-        bgcolor: 'transparent',
+        mb: 0,
+        bgcolor: '#ffffff',
+        boxShadow: 'none',
       }}
     >
       <Container
@@ -64,7 +66,7 @@ export default function ResponsiveAppBar() {
               fontWeight: 500,
               color: 'black',
               textDecoration: 'none',
-              width: '202px',
+              width: '300px',
             }}
           >
             Hyperion
@@ -95,34 +97,21 @@ export default function ResponsiveAppBar() {
               display: {
                 xs: 'none',
                 md: 'flex',
-                width: '202px',
+                width: '300px',
+                justifyContent: 'end',
+                alignItems: 'end',
               },
               gap: 1,
             }}
           >
-            <Button
-              variant="text"
-              href="/sign-in"
-              sx={{
-                color: 'black',
-                borderRadius: 6,
-                '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-              }}
-            >
-              Sign In
-            </Button>
-            <Button
-              href="/sign-up"
-              variant="outlined"
-              sx={{
-                color: 'black',
-                borderColor: 'black',
-                borderRadius: 6,
-                '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-              }}
-            >
-              Get Started
-            </Button>
+            <ButtonTertiary
+              label={'Sign-in'}
+              href={'sign-in'}
+            />
+            <ButtonPrimary
+              label={'Get Started'}
+              href={'sign-up'}
+            />
           </Box>
 
           {/* Mobile Hamburger — FIX: hidden on desktop */}

@@ -19,8 +19,6 @@ export default function ButtonPrimary({ label, ...props }: AppButtonProps) {
         fontSize: '16px',
         fontWeight: 500,
         borderRadius: '24px',
-        px: 3,
-        py: 1,
         '&:hover': {
           opacity: 0.9,
         },

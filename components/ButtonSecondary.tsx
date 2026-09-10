@@ -19,8 +19,6 @@ export default function ButtonSecondary({ label, ...props }: AppButtonProps) {
         textTransform: 'uppercase',
         fontWeight: 500,
         borderRadius: '24px',
-        px: 3,
-        py: 1,
         '&:hover': {
           opacity: 0.9,
         },

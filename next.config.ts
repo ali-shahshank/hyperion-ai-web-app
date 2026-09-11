@@ -19,6 +19,7 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
+  cacheComponents: true,
   reactCompiler: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,

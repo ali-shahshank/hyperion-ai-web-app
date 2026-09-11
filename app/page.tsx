@@ -137,6 +137,7 @@ export default function HomePage() {
                 fill
                 sizes="100vw"
                 style={{ objectFit: 'cover' }}
+                loading="eager"
               />
             </Box>
           </Box>

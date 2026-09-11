@@ -9,7 +9,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
-import type { Page } from './Nav'; // Import shared type
+import Link from 'next/link';
+import type { Page } from './Nav';
 
 interface AppDrawerProps {
   open: boolean;
@@ -19,7 +20,7 @@ interface AppDrawerProps {
 
 export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') onClose(); // Only close on Escape
+    if (event.key === 'Escape') onClose();
   };
 
   return (
@@ -35,18 +36,21 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
           display: 'flex',
           flexDirection: 'column',
         }}
-        role="presentation"
+        // [fix] removed role="presentation" — preserves semantic structure
         onClick={onClose}
         onKeyDown={handleKeyDown}
       >
-        {/* Nav Links */}
+        {/* Nav Links — [fix] ListItemButton uses Link component */}
         <List sx={{ flexGrow: 1 }}>
           {pages.map(({ title, Icon, link }) => (
             <ListItem
               key={title}
               disablePadding
             >
-              <ListItemButton href={link}>
+              <ListItemButton
+                component={Link}
+                href={link}
+              >
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   <Icon />
                 </ListItemIcon>
@@ -58,9 +62,10 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
 
         <Divider />
 
-        {/* Auth Buttons — FIX: moved inside flex parent */}
+        {/* Auth Buttons — [fix] component={Link}, fixed missing slash */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2 }}>
           <Button
+            component={Link}
             href="/sign-in"
             variant="text"
             fullWidth
@@ -73,7 +78,8 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
             Sign In
           </Button>
           <Button
-            href="sign-up"
+            component={Link}
+            href="/sign-up"
             variant="outlined"
             fullWidth
             sx={{

@@ -74,13 +74,6 @@ export default function Footer() {
       }}
     >
       <Box
-        component="img"
-        src="/atlas-logo-white.png"
-        alt="Atlas AI"
-        sx={{ width: '108px', height: '24px', objectFit: 'contain' }}
-      />
-
-      <Box
         sx={{
           width: '100%',
           display: 'flex',

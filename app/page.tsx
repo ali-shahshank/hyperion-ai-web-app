@@ -31,7 +31,7 @@ export default function HomePage() {
           component="section"
           aria-label="Hero"
           sx={{
-            pt: { xs: '40px', sm: '48px', md: '64px' },
+            pt: { xs: '80px', sm: '96px', md: '128px' },
             px: { xs: '16px', sm: '16px', md: '24px' },
             pb: { xs: '24px', sm: '24px', md: '24px' },
           }}
@@ -54,7 +54,7 @@ export default function HomePage() {
                 fontSize: '12px',
                 fontWeight: 400,
                 letterSpacing: '0.46px',
-                color: 'rgba(0,0,200,0.8)', // darken from 0.6 to 0.8
+                color: 'rgba(0,0,200,0.8)',
                 borderColor: 'rgba(0,0,255,0.4)',
                 bgcolor: 'rgba(0,0,255,0.06)',
                 borderRadius: '24px',

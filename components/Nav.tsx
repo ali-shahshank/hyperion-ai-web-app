@@ -36,11 +36,11 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar
-      position="relative"
+      position="fixed"
       sx={{
         p: 0,
         mb: 0,
-        bgcolor: '#ffffff',
+        bgcolor: 'var(--background-primary)',
         boxShadow: 'none',
       }}
     >

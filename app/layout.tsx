@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-// import WebVitals from '@/components/WebVitals';
+// import { Analytics } from '@vercel/analytics/react';
+// import { SpeedInsights } from '@vercel/speed-insights/next';
+import WebVitals from '@/components/WebVitals';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/app/theme/theme';
 import './globals.css';
@@ -76,15 +76,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <WebVitals /> */}
+        <WebVitals />
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* <Analytics />
+        <SpeedInsights /> */}
       </body>
     </html>
   );

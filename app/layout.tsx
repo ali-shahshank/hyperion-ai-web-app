@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import Loading from './loading';
 import theme from '@/app/theme/theme';
 import './globals.css';
 import '@fontsource/roboto/300.css';
@@ -61,7 +63,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <Suspense fallback={<Loading />}> {children}</Suspense>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

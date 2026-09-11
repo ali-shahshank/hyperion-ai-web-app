@@ -1,4 +1,4 @@
-import './globals.css';
+import type { Metadata } from 'next';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -6,56 +6,18 @@ import Footer from '@/components/Footer';
 import Chip from '@mui/material/Chip';
 import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
-import Card from '@/components/Card';
 
-// Section heading component
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Stack
-      sx={{
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography
-        sx={{
-          color: 'var(--text-disabled)',
-          fontSize: '16px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.46px',
-        }}
-      >
-        {eyebrow}
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: { xs: '28px', md: '32px' },
-          fontWeight: 400,
-        }}
-      >
-        {title}
-      </Typography>
-      <Typography
-        sx={{
-          color: 'var(--text-secondary)',
-          fontSize: { xs: '16px', md: '20px' },
-        }}
-      >
-        {description}
-      </Typography>
-    </Stack>
-  );
-}
+export const metadata: Metadata = {
+  title: 'Home',
+  description:
+    'The AI workspace built for how professionals actually work. Automate meetings, emails, and documents into structured action plans.',
+  openGraph: {
+    title: 'Hyperion AI — The Ultimate AI Productivity Platform',
+    description: 'The AI workspace built for how professionals actually work.',
+    url: '/',
+  },
+};
 
-// Primary page component
 export default function HomePage() {
   return (
     <Box
@@ -65,8 +27,9 @@ export default function HomePage() {
       <Nav />
       <Box
         component="section"
+        aria-label="Hero"
         sx={{
-          pt: { xs: '40px', sm: '48', md: '64px' },
+          pt: { xs: '40px', sm: '48px', md: '64px' },
           px: { xs: '16px', sm: '16px', md: '24px' },
           pb: { xs: '24px', sm: '24px', md: '24px' },
         }}
@@ -105,6 +68,7 @@ export default function HomePage() {
             }}
           >
             <Typography
+              variant="h1"
               component="h1"
               sx={{
                 fontSize: { xs: '32px', sm: '40px', md: '48px' },
@@ -119,10 +83,14 @@ export default function HomePage() {
                 AI Productivity Platform
               </Box>
             </Typography>
+
             <Typography
+              variant="h2"
+              component="p"
               sx={{
                 color: 'var(--text-secondary)',
                 fontSize: { xs: '16px', sm: '20px', md: '24px' },
+                fontWeight: 400,
               }}
             >
               AI workspace built for professionals. One platform — endless
@@ -132,7 +100,7 @@ export default function HomePage() {
 
           <Stack
             direction="row"
-            spacing={'12px'}
+            spacing="12px"
             sx={{
               display: 'flex',
               justifyContent: 'center',
@@ -141,18 +109,14 @@ export default function HomePage() {
             }}
           >
             <ButtonSecondary
-              label={'Get Started'}
+              label="Get Started"
               href="/sign-up"
             />
           </Stack>
         </Stack>
 
-        <Box
-          sx={{
-            height: { xs: '220px', sm: '360px', md: '460px' },
-          }}
-        >
-          {' '}
+        {/* Hero image placeholder */}
+        <Box sx={{ height: { xs: '220px', sm: '360px', md: '460px' } }}>
           <Box
             sx={{
               height: '100%',
@@ -164,6 +128,7 @@ export default function HomePage() {
           />
         </Box>
       </Box>
+
       <Footer />
     </Box>
   );

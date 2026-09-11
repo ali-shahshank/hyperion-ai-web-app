@@ -86,7 +86,7 @@ export default function ResponsiveAppBar() {
                   textTransform: 'none',
                   fontWeight: 400,
                   color: 'black',
-                  '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
+                  '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
                 }}
               >
                 {page.title}

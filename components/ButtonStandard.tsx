@@ -11,6 +11,7 @@ export default function ButtonStandard({ label, ...props }: AppButtonProps) {
       size="medium"
       {...props}
       sx={{
+        borderRadius: '24px',
         color: 'var(--background-secondary)',
         ...props.sx,
         '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },

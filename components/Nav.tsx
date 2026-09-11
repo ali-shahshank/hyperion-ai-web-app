@@ -36,7 +36,7 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar
-      position="fixed"
+      position="relative"
       sx={{
         p: 0,
         mb: 0,

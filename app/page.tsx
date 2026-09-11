@@ -31,7 +31,7 @@ export default function HomePage() {
           component="section"
           aria-label="Hero"
           sx={{
-            pt: { xs: '80px', sm: '96px', md: '128px' },
+            pt: { xs: '40px', sm: '48px', md: '64px' },
             px: { xs: '16px', sm: '16px', md: '24px' },
             pb: { xs: '24px', sm: '24px', md: '24px' },
           }}

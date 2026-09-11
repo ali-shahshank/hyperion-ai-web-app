@@ -54,8 +54,8 @@ export default function HomePage() {
                 fontSize: '12px',
                 fontWeight: 400,
                 letterSpacing: '0.46px',
-                color: 'rgba(0,0,255,0.6)',
-                borderColor: 'rgba(0,0,255,0.24)',
+                color: 'rgba(0,0,200,0.8)', // darken from 0.6 to 0.8
+                borderColor: 'rgba(0,0,255,0.4)',
                 bgcolor: 'rgba(0,0,255,0.06)',
                 borderRadius: '24px',
               }}

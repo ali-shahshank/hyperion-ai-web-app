@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import Chip from '@mui/material/Chip';
 import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -62,6 +63,7 @@ export default function HomePage() {
 
             <Stack
               sx={{
+                gap: 2,
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
@@ -120,16 +122,27 @@ export default function HomePage() {
           <Box sx={{ height: { xs: '220px', sm: '360px', md: '460px' } }}>
             <Box
               sx={{
+                position: 'relative',
                 height: '100%',
                 width: '100%',
                 bgcolor: 'var(--background-secondary)',
                 border: '1px solid var(--stroke-dark)',
                 borderRadius: '16px',
+                overflow: 'hidden',
               }}
-            />
+            >
+              <Image
+                src="/placeholder-img.png"
+                alt="placeholder image"
+                fill
+                sizes="100vw"
+                style={{ objectFit: 'cover' }}
+              />
+            </Box>
           </Box>
         </Box>
       </Box>
+      <Footer />
     </>
   );
 }

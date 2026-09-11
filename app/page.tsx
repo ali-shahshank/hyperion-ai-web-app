@@ -1,79 +1,12 @@
 import './globals.css';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Footer from '@/components/Footer';
 import Chip from '@mui/material/Chip';
 import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
-import ButtonTertiary from '@/components/ButtonTertiary';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import EmailIcon from '@mui/icons-material/Email';
-import GroupsIcon from '@mui/icons-material/Groups';
-import TableRowsIcon from '@mui/icons-material/TableRows';
-import RepeatIcon from '@mui/icons-material/Repeat';
-import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import Card from '@/components/Card';
-import ButtonPrimary from './../components/ButtonPrimary';
-
-const CardData = [
-  {
-    icon: TextSnippetIcon,
-    title: 'Manage Documents',
-    features: [
-      'Compose accurate, on-brand documents',
-      'Store and manage documents',
-      'Summarize, edit and refine content',
-    ],
-  },
-  {
-    icon: EmailIcon,
-    title: 'Streamline your Inbox',
-    features: [
-      'Summarize emails in seconds',
-      'Gain valuable insight at a glance',
-      'Edit, delete and draft new responses',
-    ],
-  },
-  {
-    icon: GroupsIcon,
-    title: 'Manage Documents',
-    features: [
-      'Auto-summarize calls and live sessions.',
-      'Document key insights and decision.',
-      'Generate clear, shareable action items.',
-    ],
-  },
-  {
-    icon: TableRowsIcon,
-    title: 'Gain Valuable Insight',
-    features: [
-      'Extract data from Docs and Images',
-      'Restructure and organize data.',
-      'Seamlessly analyze and export data',
-    ],
-  },
-  {
-    icon: RepeatIcon,
-    title: 'Automate Repetitive Tasks',
-    features: [
-      'Convert emails into action items',
-      'Turn meeting notes into task workflows',
-      'Eliminate time-consuming routines',
-    ],
-  },
-  {
-    icon: DeviceHubIcon,
-    title: 'Connect Apps',
-    features: [
-      'Recap meetings from Zoom',
-      'Document key insights and decision',
-      'Export and store data in Google Suite',
-    ],
-  },
-];
 
 // Section heading component
 function SectionHeading({
@@ -219,6 +152,7 @@ export default function HomePage() {
             height: { xs: '220px', sm: '360px', md: '460px' },
           }}
         >
+          {' '}
           <Box
             sx={{
               height: '100%',

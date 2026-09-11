@@ -9,13 +9,11 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-// [SEO] metadataBase required for absolute OG/canonical URLs
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   ),
 
-  // [SEO] title template applies to all child pages
   title: {
     default: 'Hyperion AI',
     template: '%s | Hyperion AI',
@@ -24,13 +22,11 @@ export const metadata: Metadata = {
   description:
     'The AI workspace built for how professionals actually work. Automate meetings, emails, and documents into structured action plans.',
 
-  // [SEO] robots — index all pages by default
   robots: {
     index: true,
     follow: true,
   },
 
-  // [SEO] OG metadata for social sharing
   openGraph: {
     type: 'website',
     siteName: 'Hyperion AI',
@@ -38,7 +34,6 @@ export const metadata: Metadata = {
     description: 'The AI workspace built for how professionals actually work.',
   },
 
-  // [SEO] Twitter/X card
   twitter: {
     card: 'summary_large_image',
     title: 'Hyperion AI',
@@ -46,7 +41,6 @@ export const metadata: Metadata = {
   },
 };
 
-// [Next.js 15+] viewport must be a separate export
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
@@ -63,7 +57,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* [a11y] <body> has no role — correct, landmark roles on inner elements */}
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>

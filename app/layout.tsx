@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Suspense } from 'react';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Loading from './loading';
 import theme from '@/app/theme/theme';
 import './globals.css';
 import '@fontsource/roboto/300.css';
@@ -34,22 +32,37 @@ export const metadata: Metadata = {
     siteName: 'Hyperion AI',
     title: 'Hyperion AI',
     description: 'The AI workspace built for how professionals actually work.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Hyperion AI',
+      },
+    ],
   },
 
   twitter: {
     card: 'summary_large_image',
     title: 'Hyperion AI',
     description: 'The AI workspace built for how professionals actually work.',
+    images: ['/og-image.png'],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
-  ],
   width: 'device-width',
   initialScale: 1,
+  themeColor: [
+    {
+      media: '(prefers-color-scheme: light)',
+      color: '#ffffff',
+    },
+    {
+      media: '(prefers-color-scheme: dark)',
+      color: '#000000',
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -63,7 +76,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Suspense fallback={<Loading />}> {children}</Suspense>
+            {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

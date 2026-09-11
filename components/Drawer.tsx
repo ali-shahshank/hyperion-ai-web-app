@@ -35,6 +35,7 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          bgcolor: 'var(--background-primary)',
         }}
         // [fix] removed role="presentation" — preserves semantic structure
         onClick={onClose}

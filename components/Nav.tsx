@@ -28,7 +28,6 @@ const pages: Page[] = [
   { title: 'Home', Icon: HomeIcon, link: '/' },
   { title: 'Product', Icon: AutoAwesomeIcon, link: '/product' },
   { title: 'Blog', Icon: ArticleIcon, link: '/blog' },
-  { title: 'Resources', Icon: LibraryBooksIcon, link: '/resources' },
   { title: 'Pricing', Icon: CheckCircleIcon, link: '/pricing' },
 ];
 

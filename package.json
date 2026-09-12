@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "allowScripts": {
-    "unrs-resolver": true
+    "unrs-resolver": false
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.79",

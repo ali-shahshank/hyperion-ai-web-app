@@ -1,52 +1,46 @@
-// import { createServerClient } from '@supabase/ssr';
-// import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-// export async function proxy(req: NextRequest) {
-//   let res = NextResponse.next({ request: req });
+const isDev = process.env.NODE_ENV === 'development';
 
-//   const supabase = createServerClient(
-//     supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL,
-//     supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-//     {
-//       cookies: {
-//         getAll() {
-//           return req.cookies.getAll();
-//         },
-//         setAll(cookiesToSet) {
-//           cookiesToSet.forEach(({ name, value }) =>
-//             req.cookies.set(name, value),
-//           );
-//           res = NextResponse.next({ request: req });
-//           cookiesToSet.forEach(({ name, value, options }) =>
-//             res.cookies.set(name, value, options),
-//           );
-//         },
-//       },
-//     },
-//   );
+export async function proxy(req: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession();
+  const cspHeader = `
+    default-src 'self';
+   script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data: https:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    worker-src 'self' blob:;
+    manifest-src 'self';
+    frame-ancestors 'none';
+    connect-src 'self' https://*.supabase.co https://api.groq.com https://api.openai.com https://api.anthropic.com;
+    upgrade-insecure-requests;
+  `.replace(/\n/g, '');
 
-//   if (
-//     !session &&
-//     !req.nextUrl.pathname.startsWith('/sign-in') &&
-//     !req.nextUrl.pathname.startsWith('/sign-up') &&
-//     !req.nextUrl.pathname.startsWith('/share') &&
-//     !req.nextUrl.pathname.startsWith('/api/auth')
-//   ) {
-//     const redirectUrl = req.nextUrl.clone();
-//     redirectUrl.pathname = '/sign-in';
-//     redirectUrl.searchParams.set('redirectedFrom', req.nextUrl.pathname);
-//     return NextResponse.redirect(redirectUrl);
-//   }
+  const requestHeaders = new Headers(req.headers);
+  // Pass nonce to layout via request header
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', cspHeader);
 
-//   return res;
-// }
+  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  res.headers.set('Content-Security-Policy', cspHeader);
 
-// export const config = {
-//   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-// };
+  return res;
+}
 
-export async function proxy() {}
+export const config = {
+  matcher: [
+    {
+      source:
+        '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+      missing: [
+        { type: 'header', key: 'next-router-prefetch' },
+        { type: 'header', key: 'purpose', value: 'prefetch' },
+      ],
+    },
+  ],
+};

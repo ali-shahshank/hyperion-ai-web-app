@@ -1,8 +1,9 @@
+import { headers } from 'next/headers';
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
-// import { Analytics } from '@vercel/analytics/react';
-// import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Suspense } from 'react';
+import Loading from './loading';
 import WebVitals from '@/components/WebVitals';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from '@/app/theme/theme';
@@ -16,20 +17,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   ),
-
   title: {
     default: 'Hyperion AI',
     template: '%s | Hyperion AI',
   },
-
   description:
     'The AI workspace built for how professionals actually work. Automate meetings, emails, and documents into structured action plans.',
-
   robots: {
     index: true,
     follow: true,
   },
-
   openGraph: {
     type: 'website',
     siteName: 'Hyperion AI',
@@ -44,7 +41,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
   twitter: {
     card: 'summary_large_image',
     title: 'Hyperion AI',
@@ -57,34 +53,30 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: [
-    {
-      media: '(prefers-color-scheme: light)',
-      color: '#ffffff',
-    },
-    {
-      media: '(prefers-color-scheme: dark)',
-      color: '#000000',
-    },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const nonce = headersList.get('x-nonce') ?? '';
+
   return (
     <html lang="en">
       <body>
+        {/* [perf] web vitals reporting */}
         <WebVitals />
-        <AppRouterCacheProvider>
+        <AppRouterCacheProvider options={{ nonce }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <Suspense fallback={<Loading />}>{children}</Suspense>
           </ThemeProvider>
         </AppRouterCacheProvider>
-        {/* <Analytics />
-        <SpeedInsights /> */}
       </body>
     </html>
   );

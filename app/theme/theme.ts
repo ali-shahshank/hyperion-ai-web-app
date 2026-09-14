@@ -6,22 +6,22 @@ const theme = createTheme({
 
   palette: {
     primary: {
-      main: '#0000FF', // --accent-primary
+      main: '#0000FF',
     },
     background: {
-      default: '#F9F9F9', // --background-primary
-      paper: '#212222', // --background-secondary
+      default: '#F9F9F9',
+      paper: '#212222',
     },
     text: {
-      primary: '#000000', // --text-primary
-      secondary: 'rgba(0,0,0,0.7)', // --text-secondary
-      disabled: 'rgba(0,0,0,0.38)', // --text-disabled
+      primary: '#000000',
+      secondary: 'rgba(0,0,0,0.7)',
+      disabled: 'rgba(0,0,0,0.38)',
     },
     common: {
-      black: '#000000', // --black
-      white: '#FFFFFF', // --white
+      black: '#000000',
+      white: '#FFFFFF',
     },
-    divider: 'rgba(0,0,0,0.12)', // --stroke-dark
+    divider: 'rgba(0,0,0,0.12)',
   },
 
   typography: {

@@ -13,9 +13,14 @@ import ArticleIcon from '@mui/icons-material/Article';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
 import AppDrawer from './Drawer';
 import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
+import ButtonTertiary from './ButtonTertiary';
 
 export interface Page {
   title: string;
@@ -32,6 +37,29 @@ const pages: Page[] = [
 
 export default function ResponsiveAppBar() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    // [auth] get initial session
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    // [auth] listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, session) =>
+      setUser(session?.user ?? null),
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <AppBar
@@ -39,7 +67,7 @@ export default function ResponsiveAppBar() {
       sx={{
         p: 0,
         mb: 0,
-        bgcolor: 'var(--background-primary)',
+        bgcolor: 'transparent',
         boxShadow: 'none',
       }}
     >
@@ -56,7 +84,7 @@ export default function ResponsiveAppBar() {
             p: { xs: '16px', sm: '0px', md: '0px' },
           }}
         >
-          {/* [fix] Logo — replaced <a> with Next.js <Link> */}
+          {/* Logo */}
           <Typography
             variant="h6"
             noWrap
@@ -73,7 +101,7 @@ export default function ResponsiveAppBar() {
             Hyperion
           </Typography>
 
-          {/* Desktop Nav Links — [fix] Button wrapped with <Link> */}
+          {/* Desktop Nav Links */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5 }}>
             {pages.slice(1).map((page) => (
               <Button
@@ -93,7 +121,7 @@ export default function ResponsiveAppBar() {
             ))}
           </Box>
 
-          {/* Desktop Auth Buttons — [fix] corrected sx nesting */}
+          {/* Desktop Auth Buttons */}
           <Box
             sx={{
               display: { xs: 'none', md: 'flex' },
@@ -103,15 +131,29 @@ export default function ResponsiveAppBar() {
               gap: 1,
             }}
           >
-            <ButtonStandard
-              label="Sign-in"
-              href="/sign-in"
-            />
-            {/* [fix] added leading slash */}
-            <ButtonPrimary
-              label="Get Started"
-              href="/sign-up"
-            />
+            {user ? (
+              <>
+                <ButtonStandard
+                  label="Chat Now"
+                  href="/chat"
+                />
+                <ButtonTertiary
+                  label="Sign Out"
+                  onClick={handleSignOut}
+                />
+              </>
+            ) : (
+              <>
+                <ButtonStandard
+                  label="Sign In"
+                  href="/sign-in"
+                />
+                <ButtonPrimary
+                  label="Get Started"
+                  href="/sign-up"
+                />
+              </>
+            )}
           </Box>
 
           {/* Mobile Hamburger */}
@@ -126,6 +168,8 @@ export default function ResponsiveAppBar() {
               open={drawerOpen}
               onClose={() => setDrawerOpen(false)}
               pages={pages}
+              user={user}
+              onSignOut={handleSignOut}
             />
           </Box>
         </Toolbar>

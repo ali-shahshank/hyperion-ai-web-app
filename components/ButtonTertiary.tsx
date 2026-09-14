@@ -16,6 +16,7 @@ export default function ButtonTertiary({ label, ...props }: AppButtonProps) {
         borderColor: 'var(--background-secondary)',
         borderRadius: '24px',
         ...props.sx,
+        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
       }}
     >
       {label}

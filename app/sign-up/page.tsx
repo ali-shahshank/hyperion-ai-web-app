@@ -56,7 +56,6 @@ export default function SignUp() {
 
   return (
     <>
-      <Nav />
       <Box
         sx={{
           minHeight: '100vh',
@@ -64,16 +63,17 @@ export default function SignUp() {
           color: 'var(--text-primary)',
         }}
       >
+        <Nav />
         <Box
           component="main"
           sx={{
-            minHeight: { xs: 'auto', md: '832px' },
+            minHeight: { xs: 'auto', md: 'auto' },
             boxSizing: 'border-box',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            px: { xs: '16px', sm: '24px' },
-            pb: { xs: '40px', md: '40px' },
+            px: { xs: '16px', sm: '16px', md: '24px' },
+            py: { xs: '40px', sm: '48px', md: '64px' },
           }}
         >
           <Box
@@ -87,11 +87,10 @@ export default function SignUp() {
               flexDirection: 'column',
               alignItems: 'center',
               gap: '24px',
-              px: '24px',
-              py: '32px',
+              p: '24px',
               bgcolor: 'var(--background-primary)',
               border: '1px solid var(--stroke-dark)',
-              borderRadius: '24px',
+              borderRadius: '16px',
               boxShadow:
                 '0px 1px 5px rgba(0,0,0,0.12), 0px 2px 2px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.2)',
             }}
@@ -103,22 +102,12 @@ export default function SignUp() {
               <Box sx={{ textAlign: 'center' }}>
                 <Typography
                   sx={{
-                    fontSize: '28px',
+                    fontSize: '24px',
                     fontWeight: 500,
                     lineHeight: 'normal',
                   }}
                 >
-                  Sign Up For Free!
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: '16px',
-                    color: 'var(--text-secondary)',
-                    fontSize: '20px',
-                    lineHeight: 'normal',
-                  }}
-                >
-                  Please register for a new account.
+                  Sign Up
                 </Typography>
               </Box>
 
@@ -172,7 +161,7 @@ export default function SignUp() {
                 <Typography
                   sx={{
                     color: 'var(--text-secondary)',
-                    fontSize: '20px',
+                    fontSize: '16px',
                     fontWeight: 500,
                     letterSpacing: '0.46px',
                   }}
@@ -229,24 +218,20 @@ export default function SignUp() {
               sx={{
                 color: 'var(--text-secondary)',
                 fontSize: '14px',
-                lineHeight: 1.47,
                 textAlign: 'center',
               }}
             >
               By continuing you agree to our{' '}
               <Link
-                href="/privacy"
-                style={{ fontWeight: 700, color: 'inherit' }}
+                href="/policy"
+                style={{
+                  fontWeight: 600,
+                  color: 'inherit',
+                  textDecoration: 'underline',
+                }}
               >
-                Privacy Policy
+                Privacy Policy & Terms.
               </Link>{' '}
-              and{' '}
-              <Link
-                href="/terms"
-                style={{ fontWeight: 700, color: 'inherit' }}
-              >
-                Terms
-              </Link>
             </Typography>
 
             <Typography
@@ -255,7 +240,7 @@ export default function SignUp() {
               Already have an account?{' '}
               <Link
                 href="/sign-in"
-                style={{ fontWeight: 700, color: 'inherit' }}
+                style={{ fontWeight: 600, color: 'inherit' }}
               >
                 Sign In
               </Link>

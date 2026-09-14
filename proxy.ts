@@ -41,6 +41,7 @@ export async function proxy(req: NextRequest) {
     '/blog',
     '/product',
     '/pricing',
+    '/policy',
   ];
 
   // [auth] refresh session — getUser() not getSession()

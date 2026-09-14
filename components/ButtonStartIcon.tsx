@@ -18,7 +18,7 @@ const ButtonStartIcon = ({
       startIcon={icon}
       {...rest}
       sx={{
-        bgcolor: 'white',
+        bgcolor: 'transparent',
         color: 'var(--background-secondary)',
         border: ' 1px solid var(--background-secondary)',
         textTransform: 'none',

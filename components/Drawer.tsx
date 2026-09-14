@@ -10,15 +10,27 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
+import type { User } from '@supabase/supabase-js';
 import type { Page } from './Nav';
+import ButtonPrimary from './ButtonPrimary';
+import ButtonSecondary from './ButtonSecondary';
+import ButtonTertiary from './ButtonTertiary';
 
 interface AppDrawerProps {
   open: boolean;
   onClose: () => void;
   pages: Page[];
+  user: User | null;
+  onSignOut: () => void;
 }
 
-export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
+export default function AppDrawer({
+  open,
+  onClose,
+  pages,
+  user,
+  onSignOut,
+}: AppDrawerProps) {
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Escape') onClose();
   };
@@ -37,11 +49,10 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
           flexDirection: 'column',
           bgcolor: 'var(--background-primary)',
         }}
-        // [fix] removed role="presentation" — preserves semantic structure
         onClick={onClose}
         onKeyDown={handleKeyDown}
       >
-        {/* Nav Links — [fix] ListItemButton uses Link component */}
+        {/* Nav Links */}
         <List sx={{ flexGrow: 1 }}>
           {pages.map(({ title, Icon, link }) => (
             <ListItem
@@ -63,35 +74,35 @@ export default function AppDrawer({ open, onClose, pages }: AppDrawerProps) {
 
         <Divider />
 
-        {/* Auth Buttons — [fix] component={Link}, fixed missing slash */}
+        {/* Auth Buttons */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2 }}>
-          <Button
-            component={Link}
-            href="/sign-in"
-            variant="text"
-            fullWidth
-            sx={{
-              color: 'black',
-              borderRadius: 6,
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-            }}
-          >
-            Sign In
-          </Button>
-          <Button
-            component={Link}
-            href="/sign-up"
-            variant="outlined"
-            fullWidth
-            sx={{
-              color: 'black',
-              borderColor: 'black',
-              borderRadius: 6,
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-            }}
-          >
-            Get Started
-          </Button>
+          {user ? (
+            <>
+              <ButtonPrimary
+                fullWidth
+                label="Chat Now"
+                href="/chat"
+              />
+              <ButtonTertiary
+                fullWidth
+                label="Sign Out"
+                onClick={onSignOut}
+              />
+            </>
+          ) : (
+            <>
+              <ButtonPrimary
+                fullWidth
+                label="Chat Now"
+                href="/sign-in"
+              />
+              <ButtonTertiary
+                fullWidth
+                label="Sign Up"
+                href="/sign-up"
+              />
+            </>
+          )}
         </Box>
       </Box>
     </Drawer>

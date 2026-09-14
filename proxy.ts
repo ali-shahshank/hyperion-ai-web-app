@@ -1,4 +1,5 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/proxy';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -7,7 +8,7 @@ export async function proxy(req: NextRequest) {
 
   const cspHeader = `
     default-src 'self';
-   script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self';
@@ -22,14 +23,53 @@ export async function proxy(req: NextRequest) {
   `.replace(/\n/g, '');
 
   const requestHeaders = new Headers(req.headers);
-  // Pass nonce to layout via request header
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', cspHeader);
 
-  const res = NextResponse.next({ request: { headers: requestHeaders } });
-  res.headers.set('Content-Security-Policy', cspHeader);
+  const requestWithHeaders = new NextRequest(req.url, {
+    headers: requestHeaders,
+    method: req.method,
+  });
 
-  return res;
+  const { supabase, supabaseResponse } = createClient(requestWithHeaders);
+
+  // [auth routes]
+  const publicRoutes = [
+    '/',
+    '/sign-in',
+    '/sign-up',
+    '/blog',
+    '/product',
+    '/pricing',
+  ];
+
+  // [auth] refresh session — getUser() not getSession()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = req.nextUrl.pathname;
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith('/share'),
+  );
+
+  // [auth] redirect unauthenticated users to sign-in
+  if (!user && !isPublicRoute) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/sign-in';
+    redirectUrl.searchParams.set('redirectedFrom', pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // [auth] redirect authenticated users away from auth pages
+  if (user && (pathname === '/sign-in' || pathname === '/sign-up')) {
+    return NextResponse.redirect(new URL('/chat', req.url));
+  }
+
+  supabaseResponse.headers.set('Content-Security-Policy', cspHeader);
+  supabaseResponse.headers.set('x-nonce', nonce);
+
+  return supabaseResponse;
 }
 
 export const config = {

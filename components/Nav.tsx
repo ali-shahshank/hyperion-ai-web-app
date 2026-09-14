@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ArticleIcon from '@mui/icons-material/Article';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import Link from 'next/link';

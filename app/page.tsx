@@ -25,7 +25,7 @@ export default function HomePage() {
       <Nav />
       <Box
         component="main"
-        sx={{ height: '100vh', overflow: 'hidden' }}
+        sx={{ overflow: 'hidden' }}
       >
         <Box
           component="section"

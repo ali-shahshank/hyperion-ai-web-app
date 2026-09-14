@@ -38,6 +38,8 @@ export async function proxy(req: NextRequest) {
     '/',
     '/sign-in',
     '/sign-up',
+    '/forgot-password',
+    '/reset-password',
     '/blog',
     '/product',
     '/pricing',

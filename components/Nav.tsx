@@ -67,7 +67,8 @@ export default function ResponsiveAppBar() {
       sx={{
         p: 0,
         mb: 0,
-        bgcolor: 'transparent',
+        bgcolor: 'var(--background-primary)',
+        dropShadow: 'none',
         boxShadow: 'none',
       }}
     >

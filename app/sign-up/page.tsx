@@ -56,6 +56,8 @@ export default function SignUp() {
 
   return (
     <>
+      {' '}
+      <Nav />
       <Box
         sx={{
           minHeight: '100vh',
@@ -63,7 +65,6 @@ export default function SignUp() {
           color: 'var(--text-primary)',
         }}
       >
-        <Nav />
         <Box
           component="main"
           sx={{

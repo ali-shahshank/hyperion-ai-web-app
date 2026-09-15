@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { Analytics } from '@vercel/analytics/next';
 import { ThemeProvider } from '@mui/material/styles';
 import { Suspense } from 'react';
 import Loading from './loading';
@@ -77,6 +78,7 @@ export default async function RootLayout({
             <Suspense fallback={<Loading />}>{children}</Suspense>
           </ThemeProvider>
         </AppRouterCacheProvider>
+        <Analytics />
       </body>
     </html>
   );

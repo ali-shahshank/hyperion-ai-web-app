@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from '@mui/material/styles';
 import { Suspense } from 'react';
 import Loading from './loading';
@@ -78,6 +79,7 @@ export default async function RootLayout({
           </ThemeProvider>
         </AppRouterCacheProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

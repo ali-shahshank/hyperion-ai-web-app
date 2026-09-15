@@ -1,5 +1,5 @@
 'use client';
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -8,14 +8,33 @@ import Typography from '@mui/material/Typography';
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
+import { createClient } from '@/lib/supabase/client';
 import { updatePassword } from './actions';
 
 export default function ResetPassword() {
   const [error, setError] = useState<string | null>(null);
+  const [verified, setVerified] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const supabase = createClient();
+
+  useEffect(() => {
+    // [auth] listen for PASSWORD_RECOVERY event per Supabase docs
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setVerified(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!verified) {
+      setError('Invalid or expired reset link. Please request a new one.');
+      return;
+    }
     startTransition(async () => {
       setError(null);
       const formData = new FormData(event.currentTarget);
@@ -87,6 +106,16 @@ export default function ResetPassword() {
                 </Typography>
               </Box>
 
+              {/* [auth] show warning if recovery state not established */}
+              {!verified && (
+                <Alert
+                  severity="warning"
+                  sx={{ width: '100%' }}
+                >
+                  Waiting to verify your reset link...
+                </Alert>
+              )}
+
               {error && (
                 <Alert
                   severity="error"
@@ -108,6 +137,7 @@ export default function ResetPassword() {
                   placeholder="********"
                   required
                   fullWidth
+                  disabled={!verified}
                 />
                 <TextField
                   size="small"
@@ -117,6 +147,7 @@ export default function ResetPassword() {
                   placeholder="********"
                   required
                   fullWidth
+                  disabled={!verified}
                 />
               </Stack>
 
@@ -127,7 +158,7 @@ export default function ResetPassword() {
                 loading={isPending}
                 loadingPosition="start"
                 label={isPending ? 'Updating...' : 'Update Password'}
-                disabled={isPending}
+                disabled={isPending || !verified}
               />
             </Stack>
           </Box>

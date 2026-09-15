@@ -1,14 +1,32 @@
 'use server';
+
 import { createClient } from '@/lib/supabase/server';
+import { headers } from 'next/headers';
 
 export async function resetPassword(formData: FormData) {
   const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(
-    String(formData.get('email')),
-    {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password`,
-    },
-  );
-  if (error) return { error: error.message };
+
+  // 1. Safely extract and trim email
+  const email = formData.get('email')?.toString().trim();
+
+  if (!email) {
+    return { error: 'Email address is required.' };
+  }
+
+  // 2. Dynamically determine domain origin
+  const origin = (await headers()).get('origin');
+  const redirectTo = `${origin}/auth/confirm?next=/reset-password`;
+
+  // 3. Request password reset email from Supabase
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+
+  // 4. Handle response
+  if (error) {
+    console.error('Reset Password Error:', error.message);
+    return { error: error.message };
+  }
+
   return { message: 'Check your email for a password reset link.' };
 }

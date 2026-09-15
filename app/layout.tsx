@@ -70,7 +70,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* [perf] web vitals reporting */}
         <WebVitals />
         <AppRouterCacheProvider options={{ nonce }}>
           <ThemeProvider theme={theme}>

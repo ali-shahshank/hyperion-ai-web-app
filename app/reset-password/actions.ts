@@ -16,7 +16,7 @@ export async function updatePassword(formData: FormData) {
   }
 
   if (password.length < 8) {
-    return { error: 'Password must be at least 6 characters long.' };
+    return { error: 'Password must be at least 8 characters long.' };
   }
 
   // Optional: Confirm password matching if present in form

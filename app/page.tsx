@@ -7,6 +7,8 @@ import Chip from '@mui/material/Chip';
 import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
 import Image from 'next/image';
+import SectionHeading from '@/components/SectionHeading';
+import Card from '@/components/Card';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -71,22 +73,20 @@ export default function HomePage() {
               }}
             >
               <Typography
-                variant="h1"
+                variant="h3"
                 component="h1"
                 sx={{
                   fontSize: { xs: '32px', sm: '40px', md: '48px' },
-                  fontWeight: 400,
                 }}
               >
-                The Ultimate{' '}
+                The Ultimate AI{' '}
                 <Box
                   component="span"
                   sx={{ color: 'var(--accent-primary)' }}
                 >
-                  AI Productivity Platform
+                  Productivity Platform
                 </Box>
               </Typography>
-
               <Typography
                 variant="h2"
                 component="p"
@@ -141,6 +141,25 @@ export default function HomePage() {
               />
             </Box>
           </Box>
+        </Box>
+        {/* Features */}
+
+        <Box sx={{ p: 8 }}>
+          <SectionHeading
+            eyebrow="Features"
+            heading="Supercharge your workflow"
+            subheading="10X your productivity — AI solution for every task."
+          />
+
+          <Card />
+        </Box>
+        {/* Use cases */}
+        <Box>
+          <SectionHeading
+            eyebrow="Use cases"
+            heading="Real-world applications"
+            subheading="Industry agnostic toolkit for complex workflows"
+          />
         </Box>
       </Box>
       <Footer />

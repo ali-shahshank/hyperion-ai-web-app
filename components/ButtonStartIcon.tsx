@@ -18,9 +18,8 @@ const ButtonStartIcon = ({
       startIcon={icon}
       {...rest}
       sx={{
-        bgcolor: 'transparent',
         color: 'var(--background-secondary)',
-        border: ' 1px solid var(--background-secondary)',
+        border: '1px solid var(--background-secondary)',
         textTransform: 'none',
         borderRadius: '24px',
         '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },

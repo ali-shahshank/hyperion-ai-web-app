@@ -40,10 +40,15 @@ export async function proxy(req: NextRequest) {
     '/sign-up',
     '/forgot-password',
     '/reset-password',
+    '/about',
+    '/contact',
+    '/resources',
     '/blog',
     '/product',
     '/pricing',
     '/policy',
+    '/faq',
+    '/affiliates',
   ];
 
   // [auth] refresh session — getUser() not getSession()

@@ -1,18 +1,19 @@
 'use client';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 
 const productLinks = [
   { name: 'Product', icon: '', href: '/product' },
   { name: 'Blog', icon: '', href: '/blog' },
   { name: 'Resources', icon: '', href: '/resources' },
-  { name: 'Affiliates', icon: '', href: 'affiliates' },
+  { name: 'Affiliates', icon: '', href: '/affiliates' },
 ];
 const companyLinks = [
   { name: 'About', icon: '', href: '/about' },
   { name: 'Contact', icon: '', href: '/contact' },
   { name: 'FAQ', icon: '', href: '/faq' },
-  { name: 'Sign Up', icon: '', href: 'sign-up' },
+  { name: 'Sign Up', icon: '', href: '/sign-up' },
 ];
 
 function FooterLinks({
@@ -127,25 +128,28 @@ export default function Footer() {
               whiteSpace: 'nowrap',
             }}
           >
-            All rights reserved © Atlas AI 2026
+            All rights reserved © Hyperion AI 2026
           </Typography>
-          <Typography
-            component="a"
-            href="#"
-            sx={{
-              color: 'var(--text-light-secondary)',
-              fontSize: { xs: '8px', sm: '12px', md: '12px' },
-              fontWeight: 400,
-              lineHeight: 1,
-              textDecoration: 'none',
-              whiteSpace: 'nowrap',
-              '&:hover': {
-                opacity: 0.7,
-              },
-            }}
+          <Link
+            href="/policy"
+            sx={{ textDecoration: 'none' }}
           >
-            Privacy Policy &amp; Terms and Conditions
-          </Typography>
+            <Typography
+              sx={{
+                color: 'var(--text-light-secondary)',
+                fontSize: { xs: '8px', sm: '12px', md: '12px' },
+                fontWeight: 400,
+                lineHeight: 1,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                '&:hover': {
+                  opacity: 0.7,
+                },
+              }}
+            >
+              Privacy Policy and Terms
+            </Typography>
+          </Link>
         </Box>
       </Box>
     </Box>

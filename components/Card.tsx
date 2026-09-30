@@ -1,60 +1,55 @@
 'use client';
 
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { CardItem } from '@/lib/data/constants/cardData';
+import HomeIcon from '@mui/icons-material/Home';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Image from 'next/image';
+import ButtonPrimary from './ButtonPrimary';
+import ButtonSecondary from './ButtonSecondary';
 
-const Card = ({ Icon, title, features }: CardItem) => {
+// export interface CardContent {
+//   Icon: React.ElementType;
+//   title: string;
+//   text: string;
+//   link: string;
+// }
+
+// const CardContent = [
+//   {
+//     icon: HomeIcon,
+//     title: 'Card one title',
+//     text: 'Card one feature',
+//     link: '/product',
+//   },
+//   {
+//     icon: HomeIcon,
+//     title: 'Card one title',
+//     text: 'Card one feature',
+//     link: '/product',
+//   },
+//   {
+//     icon: HomeIcon,
+//     title: 'Card one title',
+//     text: 'Card one feature',
+//     link: '/product',
+//   },
+// ];
+
+const items = ['item one', 'item two', 'item three', 'item four'];
+
+export default function () {
   return (
-    <Box
-      component="article"
-      sx={{
-        p: 3,
-        bgcolor: 'var(--background-primary)',
-        border: '1px solid var(--stroke-dark)',
-        borderRadius: 3,
-      }}
-    >
-      <Stack spacing={1.5}>
-        <Box
-          aria-hidden="true"
-          sx={{ color: 'var(--accent-primary)', display: 'flex' }}
-        >
-          <Icon fontSize="medium" />
-        </Box>
-
-        <Typography
-          variant="h6"
-          component="h3"
-          sx={{ fontWidth: '500' }}
-        >
-          {title}
-        </Typography>
-
-        <List
-          dense
-          disablePadding
-          aria-label={`${title} features`}
-        >
-          {features.map((feature) => (
-            <ListItem
-              key={feature}
-              disableGutters
-            >
-              <ListItemText
-                primary={feature}
-                sx={{ color: 'var(--text-secondary)' }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Stack>
-    </Box>
+    <>
+      <Card></Card>
+    </>
   );
-};
-
-export default Card;
+}

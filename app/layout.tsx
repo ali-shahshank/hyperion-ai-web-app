@@ -71,7 +71,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WebVitals />
         <AppRouterCacheProvider options={{ nonce }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -80,6 +79,7 @@ export default async function RootLayout({
         </AppRouterCacheProvider>
         <Analytics />
         <SpeedInsights />
+        <WebVitals />
       </body>
     </html>
   );

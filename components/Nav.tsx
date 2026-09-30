@@ -21,6 +21,7 @@ import AppDrawer from './Drawer';
 import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
 import ButtonTertiary from './ButtonTertiary';
+import Image from 'next/image';
 
 export interface Page {
   title: string;
@@ -42,10 +43,8 @@ export default function ResponsiveAppBar() {
   const supabase = createClient();
 
   useEffect(() => {
-    // [auth] get initial session
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
 
-    // [auth] listen for auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_, session) =>
@@ -86,21 +85,36 @@ export default function ResponsiveAppBar() {
           }}
         >
           {/* Logo */}
-          <Typography
-            variant="h6"
-            noWrap
+          <Box
             component={Link}
             href="/"
-            aria-label="Hyperion home"
             sx={{
-              fontWeight: 500,
-              color: 'black',
-              textDecoration: 'none',
+              display: 'flex',
+              justifyContent: 'start',
+              alignItems: 'center',
+              gap: '8px',
               width: '300px',
             }}
           >
-            Hyperion
-          </Typography>
+            <Image
+              src="/logo-mark.png"
+              alt="logo-mark image"
+              height={24}
+              width={24}
+            />
+            <Typography
+              variant="h6"
+              noWrap
+              aria-label="Hyperion home"
+              sx={{
+                fontWeight: 500,
+                color: 'black',
+                textDecoration: 'none',
+              }}
+            >
+              Hyperion
+            </Typography>
+          </Box>
 
           {/* Desktop Nav Links */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5 }}>

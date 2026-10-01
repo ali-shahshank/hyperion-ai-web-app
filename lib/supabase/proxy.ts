@@ -5,6 +5,7 @@ const publicRoutes = [
   '/',
   '/sign-in',
   '/sign-up',
+  '/auth',
   '/forgot-password',
   '/reset-password',
   '/blog',
@@ -12,6 +13,11 @@ const publicRoutes = [
   '/pricing',
   '/policy',
   '/auth',
+  '/affiliates',
+  '/contact',
+  '/resources',
+  '/about',
+  '/faq',
 ];
 
 export async function updateSession(request: NextRequest) {

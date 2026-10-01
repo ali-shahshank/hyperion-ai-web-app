@@ -15,7 +15,8 @@ export async function resetPassword(formData: FormData) {
 
   // 2. Dynamically determine domain origin
   const origin = (await headers()).get('origin');
-  const redirectTo = `${origin}/auth/confirm?next=/reset-password`;
+  // Hash flow - const redirectTo = `${origin}/auth/confirm?next=/reset-password`;
+  const redirectTo = `${origin}/auth/callback?next=/reset-password`;
 
   // 3. Request password reset email from Supabase
   const { error } = await supabase.auth.resetPasswordForEmail(email, {

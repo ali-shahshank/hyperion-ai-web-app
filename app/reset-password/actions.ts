@@ -8,7 +8,8 @@ export async function updatePassword(formData: FormData) {
 
   // 1. Safely extract password without String(null) coercion
   const password = formData.get('password')?.toString();
-  const confirmPassword = formData.get('confirmPassword')?.toString();
+  // const confirmPassword = formData.get('confirmPassword')?.toString();
+  const confirmPassword = formData.get('confirm')?.toString();
 
   // 2. Validate input presence and length
   if (!password) {

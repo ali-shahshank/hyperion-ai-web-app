@@ -42,24 +42,25 @@ export async function signUpWithEmail(formData: FormData) {
 // Google Sign-up
 export async function signUpWithGoogle() {
   const supabase = await createClient();
+  const origin = (await headers()).get('origin');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+      redirectTo: `${origin}/auth/callback`,
     },
   });
   if (error) return { error: error.message };
   redirect(data.url);
 }
 
-// Microsoft Sign-up
 export async function signUpWithMicrosoft() {
   const supabase = await createClient();
+  const origin = (await headers()).get('origin');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'azure',
     options: {
       scopes: 'email profile',
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+      redirectTo: `${origin}/auth/callback`,
     },
   });
   if (error) return { error: error.message };

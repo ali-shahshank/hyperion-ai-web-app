@@ -20,6 +20,7 @@ export async function proxy(req: NextRequest) {
     frame-ancestors 'none';
     connect-src 'self' https://*.supabase.co https://api.groq.com https://api.openai.com https://api.anthropic.com;
     upgrade-insecure-requests;
+    form-action 'self' https://accounts.google.com https://login.microsoftonline.com;
   `.replace(/\n/g, '');
 
   // 1. Prepare request headers with the CSP nonce

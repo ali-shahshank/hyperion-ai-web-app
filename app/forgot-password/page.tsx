@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 import Link from 'next/link';
 import ButtonSecondary from '@/components/ButtonSecondary';
-import { resetPassword } from './actions';
+import { createClient } from '@/lib/supabase/client';
 
 export default function ForgotPassword() {
   const [error, setError] = useState<string | null>(null);
@@ -21,10 +21,31 @@ export default function ForgotPassword() {
     startTransition(async () => {
       setError(null);
       setMessage(null);
-      const formData = new FormData(event.currentTarget);
-      const result = await resetPassword(formData);
-      if (result?.error) setError(result.error);
-      if (result?.message) setMessage(result.message);
+
+      const email = new FormData(event.currentTarget)
+        .get('email')
+        ?.toString()
+        .trim();
+
+      if (!email) {
+        setError('Email address is required.');
+        return;
+      }
+
+      const supabase = createClient();
+      const { error: authError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+        },
+      );
+
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
+
+      setMessage('Check your email for a password reset link.');
     });
   };
 

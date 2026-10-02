@@ -15,17 +15,24 @@ export default function ResetPassword() {
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const supabase = createClient();
 
   useEffect(() => {
-    // [auth] listen for PASSWORD_RECOVERY event per Supabase docs
+    const supabase = createClient();
+
+    // [auth] check for existing recovery session established server-side via PKCE
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setVerified(true);
+    });
+
+    // [auth] listen for auth state changes — covers both PKCE and implicit flows
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
         setVerified(true);
       }
     });
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -106,7 +113,6 @@ export default function ResetPassword() {
                 </Typography>
               </Box>
 
-              {/* [auth] show warning if recovery state not established */}
               {!verified && (
                 <Alert
                   severity="warning"

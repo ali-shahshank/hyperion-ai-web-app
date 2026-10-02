@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/proxy';
+import { updateSession } from '@/lib/supabase/proxy';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -20,64 +20,28 @@ export async function proxy(req: NextRequest) {
     frame-ancestors 'none';
     connect-src 'self' https://*.supabase.co https://api.groq.com https://api.openai.com https://api.anthropic.com;
     upgrade-insecure-requests;
+    form-action 'self' https://accounts.google.com https://login.microsoftonline.com;
   `.replace(/\n/g, '');
 
+  // 1. Prepare request headers with the CSP nonce
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', cspHeader);
 
+  // 2. Clone the request with updated headers
   const requestWithHeaders = new NextRequest(req.url, {
     headers: requestHeaders,
     method: req.method,
   });
 
-  const { supabase, supabaseResponse } = createClient(requestWithHeaders);
+  // 3. Refresh session and retrieve response containing updated cookies
+  const response = await updateSession(requestWithHeaders);
 
-  // [auth routes]
-  const publicRoutes = [
-    '/',
-    '/sign-in',
-    '/sign-up',
-    '/forgot-password',
-    '/reset-password',
-    '/about',
-    '/contact',
-    '/resources',
-    '/blog',
-    '/product',
-    '/pricing',
-    '/policy',
-    '/faq',
-    '/affiliates',
-  ];
+  // 4. Attach security headers to the final outgoing response
+  response.headers.set('x-nonce', nonce);
+  response.headers.set('Content-Security-Policy', cspHeader);
 
-  // [auth] refresh session — getUser() not getSession()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const pathname = req.nextUrl.pathname;
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith('/share'),
-  );
-
-  // [auth] redirect unauthenticated users to sign-in
-  if (!user && !isPublicRoute) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = '/sign-in';
-    redirectUrl.searchParams.set('redirectedFrom', pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // [auth] redirect authenticated users away from auth pages
-  if (user && (pathname === '/sign-in' || pathname === '/sign-up')) {
-    return NextResponse.redirect(new URL('/chat', req.url));
-  }
-
-  supabaseResponse.headers.set('Content-Security-Policy', cspHeader);
-  supabaseResponse.headers.set('x-nonce', nonce);
-
-  return supabaseResponse;
+  return response;
 }
 
 export const config = {

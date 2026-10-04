@@ -15,7 +15,6 @@ const SectionHeading = ({
     <>
       <Stack
         sx={{
-          gap: '16px',
           px: { xs: '16px', sm: '16px', md: '24px' },
           py: { xs: '40px', sm: '48px', md: '64px' },
         }}
@@ -45,7 +44,7 @@ const SectionHeading = ({
           {heading}
         </Typography>
         <Typography
-          variant="h6"
+          variant="subtitle1"
           component="h1"
           sx={{
             color: 'var(--text-secondary)',

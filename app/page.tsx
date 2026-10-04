@@ -8,8 +8,7 @@ import Nav from '@/components/Nav';
 import ButtonSecondary from '@/components/ButtonSecondary';
 import Image from 'next/image';
 import SectionHeading from '@/components/SectionHeading';
-import Card from '@/components/Card';
-
+import FeatureCard from '@/components/FeatureCard';
 export const metadata: Metadata = {
   title: 'Home',
   description:
@@ -132,7 +131,7 @@ export default function HomePage() {
               }}
             >
               <Image
-                src="/placeholder-img.png"
+                src="/simple.png"
                 alt="placeholder image"
                 fill
                 sizes="100vw"
@@ -142,24 +141,23 @@ export default function HomePage() {
             </Box>
           </Box>
         </Box>
-        {/* Features */}
 
-        <Box sx={{ p: 8 }}>
+        {/* Features Section */}
+        <Box
+          component="section"
+          aria-label="features"
+          sx={{
+            pt: { xs: '40px', sm: '48px', md: '64px' },
+            px: { xs: '16px', sm: '16px', md: '24px' },
+            pb: { xs: '40px', sm: '48px', md: '64px' },
+          }}
+        >
           <SectionHeading
             eyebrow="Features"
             heading="Supercharge your workflow"
-            subheading="10X your productivity — AI solution for every task."
+            subheading="10x your productivity with enterprise grade AI tools."
           />
-
-          <Card />
-        </Box>
-        {/* Use cases */}
-        <Box>
-          <SectionHeading
-            eyebrow="Use cases"
-            heading="Real-world applications"
-            subheading="Industry agnostic toolkit for complex workflows"
-          />
+          <FeatureCard />
         </Box>
       </Box>
       <Footer />

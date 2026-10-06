@@ -18,23 +18,23 @@ const cardData: FeatureCardItem[] = [
   {
     image: '/simple.png',
     href: '/',
-    title: 'Card One',
+    title: 'Recap Meetings',
     description:
-      'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
+      'Automatically summarize meetings, capture decisions, and generate clear action items.',
   },
   {
     image: '/simple.png',
     href: '/',
-    title: 'Card Two',
+    title: 'Streamline your inbox',
     description:
-      'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
+      'Summarize emails, extract key insights, and efficiently draft or edit responses instantly.',
   },
   {
     image: '/simple.png',
     href: '/',
-    title: 'Card Three',
+    title: 'Gain Insight',
     description:
-      'Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica',
+      'Seamlessly extract data from documents and images, restructure, analyze, and export results.',
   },
 ];
 
@@ -58,8 +58,9 @@ function FeatureCard({ image, href, title, description }: FeatureCardItem) {
         <CardContent>
           <Typography
             gutterBottom
-            variant="h5"
+            variant="h6"
             component="h3"
+            sx={{ fontWeight: '400' }}
           >
             {title}
           </Typography>

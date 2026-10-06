@@ -7,12 +7,12 @@
   --accent-primary: #0000ff;
   --black: #000000;
   --white: #ffffff;
-  --text-primary: #000000;
-  --text-secondary: rgba(0, 0, 0, 0.7);
-  --text-disabled: rgba(255, 255, 255, 0.38);
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
   --text-disabled: rgba(0, 0, 0, 0.38);
   --text-light-primary: #ffffff;
   --text-light-secondary: rgba(255, 255, 255, 0.7);
+  --text-light-disabled: rgba(255, 255, 255, 0.38);
   --stroke-dark: rgba(0, 0, 0, 0.12);
   --stroke-light: rgba(255, 255, 255, 0.38);
 }

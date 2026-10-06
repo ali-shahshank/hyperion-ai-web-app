@@ -118,7 +118,7 @@ export default function HomePage() {
           </Stack>
 
           {/* Hero image placeholder */}
-          <Box sx={{ height: { xs: '220px', sm: '360px', md: '460px' } }}>
+          <Box sx={{ height: { xs: '220px', sm: '360px', md: '420px' } }}>
             <Box
               sx={{
                 position: 'relative',
@@ -147,9 +147,9 @@ export default function HomePage() {
           component="section"
           aria-label="features"
           sx={{
-            pt: { xs: '40px', sm: '48px', md: '64px' },
+            py: { xs: '40px', sm: '48px', md: '64px' },
             px: { xs: '16px', sm: '16px', md: '24px' },
-            pb: { xs: '40px', sm: '48px', md: '64px' },
+            backgroundColor: '#f7f7f7',
           }}
         >
           <SectionHeading

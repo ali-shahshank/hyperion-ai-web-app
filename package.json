@@ -15,6 +15,7 @@
     "@ai-sdk/anthropic": "^4.0.74",
     "@ai-sdk/groq": "^4.0.57",
     "@ai-sdk/openai": "^4.0.86",
+    "@ai-sdk/react": "^4.0.133",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

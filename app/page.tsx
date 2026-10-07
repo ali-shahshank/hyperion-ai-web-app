@@ -118,7 +118,12 @@ export default function HomePage() {
           </Stack>
 
           {/* Hero image placeholder */}
-          <Box sx={{ height: { xs: '220px', sm: '360px', md: '420px' } }}>
+          <Box
+            sx={{
+              px: { xs: '0px', sm: '0px', md: '64px' },
+              height: { xs: '220px', sm: '360px', md: '420px' },
+            }}
+          >
             <Box
               sx={{
                 position: 'relative',

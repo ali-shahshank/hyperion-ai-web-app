@@ -12,9 +12,9 @@
     "unrs-resolver": false
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^3.0.79",
-    "@ai-sdk/groq": "^3.0.39",
-    "@ai-sdk/openai": "^3.0.65",
+    "@ai-sdk/anthropic": "^4.0.74",
+    "@ai-sdk/groq": "^4.0.57",
+    "@ai-sdk/openai": "^4.0.86",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -26,7 +26,7 @@
     "@supabase/supabase-js": "^2.116.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "ai": "^6.0.191",
+    "ai": "^7.0.130",
     "babel-plugin-react-compiler": "^1.0.0",
     "next": "^16.3.4",
     "react": "19.2.4",
@@ -50,6 +50,7 @@
   },
   "overrides": {
     "postcss": "^8.5.10",
+    "braces": "^3.0.3",
     "typescript-eslint": {
       "typescript": "$typescript"
     }

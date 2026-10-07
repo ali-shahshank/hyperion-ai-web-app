@@ -9,6 +9,8 @@ import ButtonSecondary from '@/components/ButtonSecondary';
 import Image from 'next/image';
 import SectionHeading from '@/components/SectionHeading';
 import FeatureCard from '@/components/FeatureCard';
+import Panel from '@/components/Panel';
+
 export const metadata: Metadata = {
   title: 'Home',
   description:
@@ -158,6 +160,21 @@ export default function HomePage() {
             subheading="10x your productivity with enterprise grade AI tools."
           />
           <FeatureCard />
+        </Box>
+
+        {/* Highlights Section */}
+        <Box>
+          <Panel
+            eyebrow="Highlights"
+            title="AI Integration"
+            description={[
+              'Seamless integration with your existing tools',
+              'Intelligent automation for repetitive tasks',
+              'Real-time collaboration features',
+            ]}
+            imageSrc="/simple.png"
+            imageAlt="Highlights image"
+          />
         </Box>
       </Box>
       <Footer />

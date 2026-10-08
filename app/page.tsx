@@ -166,11 +166,13 @@ export default function HomePage() {
         <Box>
           <Panel
             eyebrow="Highlights"
-            title="AI Integration"
+            title="Built for Performance"
             description={[
-              'Seamless integration with your existing tools',
-              'Intelligent automation for repetitive tasks',
-              'Real-time collaboration features',
+              '99.9% uptime with automatic model failover',
+              '6 integrated AI models across a single platform',
+              '10x faster than manual workflow processing',
+              'Saves 3+ hrs a week per task',
+              '86.0% accuracy — across NLP benchmarks',
             ]}
             imageSrc="/simple.png"
             imageAlt="Highlights image"

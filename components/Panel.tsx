@@ -37,7 +37,7 @@ export default function Panel({
           p: { xs: 2, md: 3 },
           backgroundColor: 'black',
           border: '1px solid var(--stroke-dark)',
-          borderRadius: 2,
+          borderRadius: '16px',
           overflow: 'hidden',
         }}
       >
@@ -46,7 +46,7 @@ export default function Panel({
           sx={{
             position: 'relative',
             width: '100%',
-            minHeight: { xs: 240, sm: 320, md: 400 },
+            minHeight: { xs: 240, sm: 320, md: 360 },
             flex: 1,
           }}
         >
@@ -96,16 +96,21 @@ export default function Panel({
           <List
             disablePadding
             sx={{
+              pl: 2,
               color: 'var(--text-light-secondary)',
             }}
           >
-            {description.map((item) => (
+            {description.map((item, index) => (
               <ListItem
-                key={item}
+                key={`${title}-${index}`}
                 disableGutters
                 sx={{
-                  alignItems: 'flex-start',
+                  display: 'list-item',
+                  listStyleType: 'disc',
                   py: 0.5,
+                  '&::marker': {
+                    color: 'var(--text-light-secondary)',
+                  },
                 }}
               >
                 <ListItemText

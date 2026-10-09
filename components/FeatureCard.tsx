@@ -25,14 +25,14 @@ const cardData: FeatureCardItem[] = [
   {
     image: '/simple.png',
     href: '/',
-    title: 'Streamline your inbox',
+    title: 'Streamline Your Inbox',
     description:
       'Summarize emails, extract key insights, and efficiently draft or edit responses instantly.',
   },
   {
     image: '/simple.png',
     href: '/',
-    title: 'Gain Insight',
+    title: 'Document Understanding',
     description:
       'Seamlessly extract data from documents and images, restructure, analyze, and export results.',
   },

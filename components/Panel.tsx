@@ -53,6 +53,7 @@ export default function Panel({
           <Image
             src={imageSrc}
             alt={imageAlt}
+            loading="eager"
             fill
             sizes="(max-width: 899px) 100vw, 50vw"
             style={{

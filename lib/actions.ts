@@ -2,6 +2,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { Database } from '@/lib/supabase/types';
+import { redirect } from 'next/navigation';
 
 type Chat = Database['public']['Tables']['chats']['Row'];
 type Message = Database['public']['Tables']['messages']['Row'];
@@ -287,4 +288,13 @@ export async function deleteTask(id: string) {
   const { error } = await supabase.from('tasks').delete().eq('id', id);
   if (error) return { error: error.message };
   return { success: true };
+}
+
+// ==========================================
+// AUTH
+// ==========================================
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect('/sign-in');
 }

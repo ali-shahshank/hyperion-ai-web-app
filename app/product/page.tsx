@@ -66,10 +66,12 @@ export default function Page() {
           }}
         >
           <Image
-            src="/placeholder-img.png"
+            src="/simple.png"
             alt="placeholder image"
-            height={800}
+            height={600}
             width={800}
+            style={{ objectFit: 'cover' }}
+            loading="eager"
           />
         </Container>
       </Box>

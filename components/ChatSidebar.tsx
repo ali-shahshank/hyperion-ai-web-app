@@ -2,8 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
+import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -11,22 +19,70 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ImageIcon from '@mui/icons-material/Image';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from '@/lib/actions';
 
 const SIDEBAR_KEY = 'hyperion_sidebar_open';
-const COLLAPSED_WIDTH = 72;
-const EXPANDED_WIDTH = 270;
+const drawerWidth = 248;
+
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+  backgroundColor: 'var(--background-primary)',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(9)} + 1px)`,
+  backgroundColor: 'var(--background-primary)',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  variants: [
+    {
+      props: ({ open }) => open,
+      style: {
+        ...openedMixin(theme),
+        '& .MuiDrawer-paper': openedMixin(theme),
+      },
+    },
+    {
+      props: ({ open }) => !open,
+      style: {
+        ...closedMixin(theme),
+        '& .MuiDrawer-paper': closedMixin(theme),
+      },
+    },
+  ],
+}));
 
 interface Chat {
   id: string;
@@ -41,29 +97,29 @@ interface ChatSidebarProps {
 }
 
 const navItems = [
-  { icon: <EditIcon fontSize="small" />, label: 'New Chat', href: '/chat' },
+  { icon: <EditIcon fontSize="medium" />, label: 'New Chat', href: '/chat' },
   {
-    icon: <SearchIcon fontSize="small" />,
+    icon: <SearchIcon fontSize="medium" />,
     label: 'Search',
     href: '/chat/search',
   },
   {
-    icon: <DescriptionIcon fontSize="small" />,
+    icon: <DescriptionIcon fontSize="medium" />,
     label: 'Documents',
     href: '/chat/documents',
   },
   {
-    icon: <ImageIcon fontSize="small" />,
+    icon: <ImageIcon fontSize="medium" />,
     label: 'Images',
     href: '/chat/images',
   },
   {
-    icon: <AccountTreeIcon fontSize="small" />,
+    icon: <AccountTreeIcon fontSize="medium" />,
     label: 'Connect',
     href: '/chat/connect',
   },
   {
-    icon: <DeleteIcon fontSize="small" />,
+    icon: <DeleteIcon fontSize="medium" />,
     label: 'Trash',
     href: '/chat/trash',
   },
@@ -75,12 +131,13 @@ export default function ChatSidebar({
   userAvatarUrl,
   recentChats = [],
 }: ChatSidebarProps) {
+  const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     try {
@@ -89,18 +146,17 @@ export default function ChatSidebar({
     } catch {}
   }, []);
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
-  const toggleSidebar = () => {
-    const next = !open;
-    setOpen(next);
+  const handleDrawerOpen = () => {
+    setOpen(true);
     try {
-      localStorage.setItem(SIDEBAR_KEY, String(next));
+      localStorage.setItem(SIDEBAR_KEY, 'true');
+    } catch {}
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+    try {
+      localStorage.setItem(SIDEBAR_KEY, 'false');
     } catch {}
   };
 
@@ -116,235 +172,226 @@ export default function ChatSidebar({
     .toUpperCase()
     .slice(0, 2);
 
-  const sidebarContent = (expanded: boolean) => (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        width: expanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH,
-        bgcolor: 'var(--background-primary, #F5F5F5)',
-        transition: 'width 0.2s ease',
-        overflow: 'hidden',
-        borderRight: '1px solid var(--stroke-dark, #E0E0E0)',
-      }}
-    >
+  // Shared drawer content — `expanded` allows mobile to always render open state
+  const drawerContent = (expanded = open) => (
+    <>
       {/* Header */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: expanded ? 'space-between' : 'center',
-          px: expanded ? 2 : 0,
-          py: 1.5,
+          px: 1,
           minHeight: 56,
         }}
       >
-        {expanded ? (
-          <>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {/* Compass logo placeholder */}
-              <Box
-                sx={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  bgcolor: 'var(--brand-primary, #1A1A1A)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              ></Box>
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: 'var(--text-primary, #1A1A1A)',
-                  letterSpacing: '0.02em',
-                }}
-              >
-                Hyperion
-              </Typography>
+        {expanded && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 0.5 }}>
+            <Box>
+              <Image
+                src="/logo-mark.png"
+                alt="logo-mark"
+                height={24}
+                width={24}
+              />
             </Box>
-            <Tooltip
-              title="Collapse"
-              placement="right"
-            >
-              <IconButton
-                onClick={toggleSidebar}
-                size="small"
-              >
-                <ChevronLeftIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : (
-          <Tooltip
-            title="Expand"
-            placement="right"
-          >
-            <IconButton
-              onClick={toggleSidebar}
-              size="small"
-            >
-              <MenuIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          </Box>
         )}
+        <Tooltip
+          title={expanded ? 'Collapse' : 'Expand'}
+          placement="right"
+        >
+          <IconButton
+            onClick={expanded ? handleDrawerClose : handleDrawerOpen}
+            size="small"
+            aria-label={expanded ? 'close drawer' : 'open drawer'}
+          >
+            {expanded ? (
+              theme.direction === 'rtl' ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )
+            ) : (
+              <MenuIcon />
+            )}
+          </IconButton>
+        </Tooltip>
       </Box>
 
-      <Divider />
-
       {/* Nav Items */}
-      <Box sx={{ flex: 1, py: 1, overflowY: 'auto' }}>
+      <List sx={{ flex: 1, py: 1 }}>
         {navItems.map((item) => {
           const active = pathname === item.href;
           return (
-            <Tooltip
+            <ListItem
               key={item.href}
-              title={expanded ? '' : item.label}
-              placement="right"
+              disablePadding
+              sx={{ display: 'block' }}
             >
-              <Box
-                onClick={() => handleNav(item.href)}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: expanded ? 1.5 : 0,
-                  justifyContent: expanded ? 'flex-start' : 'center',
-                  px: expanded ? 2 : 0,
-                  py: 1,
-                  mx: expanded ? 1 : 0,
-                  borderRadius: expanded ? 1.5 : 0,
-                  cursor: 'pointer',
-                  bgcolor: active
-                    ? 'var(--stroke-dark, #E8E8E8)'
-                    : 'transparent',
-                  color: active
-                    ? 'var(--text-primary, #1A1A1A)'
-                    : 'var(--text-secondary, #666)',
-                  '&:hover': {
-                    bgcolor: 'var(--stroke-dark, #E8E8E8)',
-                    color: 'var(--text-primary, #1A1A1A)',
-                  },
-                  transition: 'background-color 0.15s',
-                  minHeight: 40,
-                }}
+              <Tooltip
+                title={expanded ? '' : item.label}
+                placement="right"
+                arrow
               >
-                {item.icon}
-                {expanded && (
-                  <Typography sx={{ fontSize: 13, fontWeight: 500 }}>
-                    {item.label}
-                  </Typography>
-                )}
-              </Box>
-            </Tooltip>
+                <ListItemButton
+                  selected={active}
+                  onClick={() => handleNav(item.href)}
+                  sx={[
+                    expanded
+                      ? { justifyContent: 'initial' }
+                      : { justifyContent: 'center' },
+                  ]}
+                >
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: 'center',
+                      },
+                      expanded ? { mr: 1.5 } : { mr: 'auto' },
+                    ]}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    sx={[expanded ? { opacity: 1 } : { opacity: 0 }]}
+                  />
+                </ListItemButton>
+              </Tooltip>
+            </ListItem>
           );
         })}
-
+        <Divider sx={{ mx: 1, my: 1 }} />
         {/* Recent Chats */}
-        {expanded && recentChats.length > 0 && (
-          <Box sx={{ mt: 1 }}>
-            <Divider sx={{ mx: 2, mb: 1 }} />
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: 'var(--text-secondary, #888)',
-                px: 3,
-                py: 0.5,
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-              }}
-            >
-              Recent
-            </Typography>
-            {recentChats.slice(0, 6).map((chat) => (
-              <Box
-                key={chat.id}
-                onClick={() => handleNav(`/chat/${chat.id}`)}
+
+        {recentChats.length > 0 && (
+          <>
+            {expanded && (
+              <Typography
                 sx={{
-                  px: 3,
-                  py: 0.75,
-                  mx: 1,
-                  borderRadius: 1.5,
-                  cursor: 'pointer',
-                  '&:hover': { bgcolor: 'var(--stroke-dark, #E8E8E8)' },
+                  fontSize: 12,
+                  color: 'var(--text-secondary, #888)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  whiteSpace: 'nowrap',
                 }}
               >
-                <Typography
-                  noWrap
-                  sx={{
-                    fontSize: 13,
-                    color: 'var(--text-secondary, #555)',
-                    maxWidth: 200,
-                  }}
+                Recent
+              </Typography>
+            )}
+            {recentChats.slice(0, 6).map((chat) => {
+              const chatActive = pathname === `/chat/${chat.id}`;
+              return (
+                <ListItem
+                  key={chat.id}
+                  disablePadding
+                  sx={{ display: 'block' }}
                 >
-                  {chat.title}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
+                  <Tooltip
+                    title={expanded ? '' : chat.title}
+                    placement="right"
+                    arrow
+                  >
+                    <ListItemButton
+                      selected={chatActive}
+                      onClick={() => handleNav(`/chat/${chat.id}`)}
+                      sx={[
+                        { minHeight: 36, borderRadius: 1.5, mx: 0.5, px: 2.5 },
+                        expanded
+                          ? { justifyContent: 'initial' }
+                          : { justifyContent: 'center' },
+                      ]}
+                    >
+                      <ListItemIcon
+                        sx={[
+                          {
+                            minWidth: 0,
+                            justifyContent: 'center',
+                            color: 'var(--text-secondary, #888)',
+                          },
+                          expanded ? { mr: 1.5 } : { mr: 'auto' },
+                        ]}
+                      >
+                        <DescriptionIcon sx={{ fontSize: 16 }} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={chat.title}
+                        sx={[expanded ? { opacity: 1 } : { opacity: 0 }]}
+                      />
+                    </ListItemButton>
+                  </Tooltip>
+                </ListItem>
+              );
+            })}
+          </>
         )}
-      </Box>
+      </List>
 
       {/* User Card */}
       <Divider />
       <Box
         sx={{
-          p: expanded ? 1.5 : 0.5,
+          p: expanded ? 1.5 : 0.75,
           display: 'flex',
           justifyContent: expanded ? 'flex-start' : 'center',
         }}
       >
-        <Box
-          onClick={(e) => setAnchorEl(e.currentTarget)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
-            cursor: 'pointer',
-            borderRadius: 1.5,
-            px: expanded ? 1 : 0,
-            py: 0.5,
-            width: expanded ? '100%' : 'auto',
-            '&:hover': { bgcolor: 'var(--stroke-dark, #E8E8E8)' },
-          }}
+        <Tooltip
+          title={expanded ? '' : userName}
+          placement="right"
+          arrow
         >
-          <Avatar
-            src={userAvatarUrl}
+          <Box
+            onClick={(e) => setAnchorEl(e.currentTarget)}
             sx={{
-              width: 32,
-              height: 32,
-              fontSize: 13,
-              fontWeight: 600,
-              bgcolor: 'var(--brand-primary, #1565C0)',
-              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              cursor: 'pointer',
+              borderRadius: 1.5,
+              px: expanded ? 1 : 0,
+              py: 0.5,
+              width: expanded ? '100%' : 'auto',
+              '&:hover': { bgcolor: 'var(--stroke-dark, #E8E8E8)' },
             }}
           >
-            {initials}
-          </Avatar>
-          {expanded && (
-            <Box sx={{ minWidth: 0 }}>
-              <Typography
-                noWrap
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: 'var(--text-primary, #1A1A1A)',
-                }}
-              >
-                {userName}
-              </Typography>
-              <Typography
-                noWrap
-                sx={{ fontSize: 11, color: 'var(--text-secondary, #888)' }}
-              >
-                {userEmail}
-              </Typography>
-            </Box>
-          )}
-        </Box>
+            <Avatar
+              src={userAvatarUrl}
+              sx={{
+                width: 32,
+                height: 32,
+                fontSize: 13,
+                fontWeight: 600,
+                bgcolor: 'var(--brand-primary, #1565C0)',
+                flexShrink: 0,
+              }}
+            >
+              {initials}
+            </Avatar>
+            {expanded && (
+              <Box sx={{ minWidth: 0 }}>
+                <Typography
+                  noWrap
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: 'var(--text-primary, #1A1A1A)',
+                  }}
+                >
+                  {userName}
+                </Typography>
+                <Typography
+                  noWrap
+                  sx={{ fontSize: 11, color: 'var(--text-secondary, #888)' }}
+                >
+                  {userEmail}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </Tooltip>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -377,44 +424,50 @@ export default function ChatSidebar({
           </MenuItem>
         </Menu>
       </Box>
-    </Box>
+    </>
   );
 
+  // Mobile: temporary overlay drawer
   if (isMobile) {
     return (
       <>
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 12,
-            left: 12,
-            zIndex: 1100,
-          }}
-        >
+        <Box sx={{ position: 'fixed', top: 12, left: 12, zIndex: 1200 }}>
           <IconButton
             onClick={() => setMobileOpen(true)}
             size="small"
+            aria-label="open sidebar"
           >
             <MenuIcon />
           </IconButton>
         </Box>
-        <Drawer
+        <MuiDrawer
+          variant="temporary"
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
           ModalProps={{ keepMounted: true }}
           sx={{
             '& .MuiDrawer-paper': {
-              width: '100vw',
-              maxWidth: 320,
+              width: drawerWidth,
               boxSizing: 'border-box',
+              backgroundColor: 'var(--background-secondary, #F5F5F5)',
+              display: 'flex',
+              flexDirection: 'column',
             },
           }}
         >
-          {sidebarContent(true)}
-        </Drawer>
+          {drawerContent(true)}
+        </MuiDrawer>
       </>
     );
   }
 
-  return sidebarContent(open);
+  // Desktop: permanent mini drawer
+  return (
+    <Drawer
+      variant="permanent"
+      open={open}
+    >
+      {drawerContent()}
+    </Drawer>
+  );
 }

@@ -14,7 +14,6 @@ export async function proxy(req: NextRequest) {
     font-src 'self';
     object-src 'none';
     base-uri 'self';
-    form-action 'self';
     worker-src 'self' blob:;
     manifest-src 'self';
     frame-ancestors 'none';

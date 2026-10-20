@@ -6,8 +6,9 @@
   --background-tertiary: rgba(0, 0, 0, 0.7);
   --accent-primary: #0000ff;
   --hover-primary: rgba(0, 0, 0, 0.04);
-  --black: #000000;
-  --white: #ffffff;
+  --active-primary: rgba(0, 0, 0, 0.7);
+  --hover-secondary: rgba(0, 0, 0, 0.8);
+  --active-secondary: rgba(0, 0, 0, 0);
   --text-primary: rgba(0, 0, 0, 0.87);
   --text-secondary: rgba(0, 0, 0, 0.6);
   --text-disabled: rgba(0, 0, 0, 0.38);

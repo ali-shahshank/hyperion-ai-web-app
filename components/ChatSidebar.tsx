@@ -326,11 +326,12 @@ export default function ChatSidebar({
       </List>
 
       {/* User Card */}
-      <Divider />
+
       <Box
         sx={{
           mt: 'auto',
-          p: expanded ? 1.5 : 0.75,
+          px: '16px',
+          py: '8px',
           display: 'flex',
           justifyContent: expanded ? 'flex-start' : 'center',
         }}
@@ -347,11 +348,12 @@ export default function ChatSidebar({
               alignItems: 'center',
               gap: 1.5,
               cursor: 'pointer',
+              border: '1px solid var(--stroke-dark)',
               borderRadius: 1.5,
-              px: expanded ? 1 : 0,
-              py: 0.5,
+              p: expanded ? '8px' : '0px',
+              py: '',
               width: expanded ? '100%' : 'auto',
-              '&:hover': { bgcolor: 'var(--stroke-dark, #E8E8E8)' },
+              '&:hover': { bgcolor: '#f7f7f7' },
             }}
           >
             <Avatar
@@ -372,7 +374,7 @@ export default function ChatSidebar({
                 <Typography
                   noWrap
                   sx={{
-                    fontSize: 13,
+                    fontSize: 16,
                     fontWeight: 600,
                     color: 'var(--text-primary, #1A1A1A)',
                   }}
@@ -381,7 +383,7 @@ export default function ChatSidebar({
                 </Typography>
                 <Typography
                   noWrap
-                  sx={{ fontSize: 11, color: 'var(--text-secondary, #888)' }}
+                  sx={{ fontSize: 14, color: 'var(--text-secondary, #888)' }}
                 >
                   {userEmail}
                 </Typography>
@@ -393,9 +395,21 @@ export default function ChatSidebar({
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          anchorOrigin={
+            expanded
+              ? { vertical: 'top', horizontal: 'left' }
+              : { vertical: 'top', horizontal: 'right' }
+          }
           transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          slotProps={{ paper: { sx: { minWidth: 180 } } }}
+          slotProps={{
+            paper: {
+              sx: {
+                backgroundColor: 'var(--background-primary)',
+                minWidth: 160,
+                ...(expanded && { width: drawerWidth - 16 }),
+              },
+            },
+          }}
         >
           <MenuItem
             onClick={() => {

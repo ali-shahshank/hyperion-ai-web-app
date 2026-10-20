@@ -66,8 +66,8 @@ export default function Page() {
           }}
         >
           <Image
-            src="/placeholder-img.png"
-            alt="placeholder image"
+            src="/simple.png"
+            alt="placeholder"
             height={800}
             width={800}
           />

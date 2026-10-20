@@ -240,7 +240,9 @@ export default function ChatSidebar({
                   sx={[
                     expanded
                       ? { justifyContent: 'initial' }
-                      : { justifyContent: 'center' },
+                      : {
+                          justifyContent: 'center',
+                        },
                   ]}
                 >
                   <ListItemIcon
@@ -281,7 +283,7 @@ export default function ChatSidebar({
                 Recent
               </Typography>
             )}
-            {recentChats.slice(0, 6).map((chat) => {
+            {recentChats.slice(0, 2).map((chat) => {
               const chatActive = pathname === `/chat/${chat.id}`;
               return (
                 <ListItem

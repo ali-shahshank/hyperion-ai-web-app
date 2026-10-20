@@ -33,7 +33,7 @@ export default async function ChatLayout({
       <ChatSidebar
         userName={displayName}
         userEmail={user.email ?? ''}
-        userAvatarUrl={profile?.avatar_url ?? undefined}
+        userAvatarUrl={profile?.avatar_url ?? ''}
         recentChats={chats ?? []}
       />
       <Box

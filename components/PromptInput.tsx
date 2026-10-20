@@ -146,7 +146,7 @@ export default function PromptInput({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography
               sx={{
-                fontSize: 11,
+                fontSize: 12,
                 color: 'var(--text-secondary, #BDBDBD)',
                 userSelect: 'none',
               }}
@@ -192,13 +192,13 @@ export default function PromptInput({
       {/* Model label below */}
       <Typography
         sx={{
-          fontSize: 11,
+          fontSize: 12,
           color: 'var(--text-secondary, #BDBDBD)',
           textAlign: 'center',
           mt: 0.75,
         }}
       >
-        Hyperion can make mistakes. Check important info.
+        Hyperion is AI and can make mistakes.
       </Typography>
     </Box>
   );

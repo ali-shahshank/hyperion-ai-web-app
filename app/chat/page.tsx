@@ -78,8 +78,7 @@ export default function ChatPage() {
             maxWidth: 480,
           }}
         >
-          I&apos;m Hyperion. Turn your meetings, emails, and documents into
-          structured action plans.
+          What would you like to work on today?
         </Typography>
       </Box>
 

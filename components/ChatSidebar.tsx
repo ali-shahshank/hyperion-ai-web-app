@@ -295,7 +295,9 @@ export default function ChatSidebar({
                 <ListItem
                   key={chat.id}
                   disablePadding
-                  sx={{ display: 'block' }}
+                  sx={{
+                    display: 'block',
+                  }}
                 >
                   <Tooltip
                     title={expanded ? '' : chat.title}
@@ -314,6 +316,15 @@ export default function ChatSidebar({
                     >
                       <ListItemText
                         primary={chat.title}
+                        slotProps={{
+                          primary: {
+                            noWrap: true,
+                            sx: {
+                              fontSize: 14,
+                              color: 'var(--text-secondary)',
+                            },
+                          },
+                        }}
                         sx={[expanded ? { opacity: 1 } : { opacity: 0 }]}
                       />
                     </ListItemButton>
@@ -348,7 +359,7 @@ export default function ChatSidebar({
               alignItems: 'center',
               gap: 1.5,
               cursor: 'pointer',
-              border: '1px solid var(--stroke-dark)',
+              border: expanded ? '1px solid var(--stroke-dark)' : 'none',
               borderRadius: 1.5,
               p: expanded ? '8px' : '0px',
               py: '',

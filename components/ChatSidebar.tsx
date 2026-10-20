@@ -8,6 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
+import ListSubheader from '@mui/material/ListSubheader';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -45,6 +46,16 @@ const openedMixin = (theme: Theme): CSSObject => ({
   backgroundColor: 'var(--background-primary)',
   display: 'flex',
   flexDirection: 'column',
+  '& .MuiListSubheader-root': {
+    fontSize: 12,
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    color: 'var(--text-secondary)',
+    backgroundColor: 'var(--background-primary)',
+    lineHeight: '2rem',
+    paddingLeft: 16,
+  },
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -181,8 +192,9 @@ export default function ChatSidebar({
           display: 'flex',
           alignItems: 'center',
           justifyContent: expanded ? 'space-between' : 'center',
-          px: 1,
-          minHeight: 56,
+          p: 1,
+
+          backgroundColor: 'black', // temporary
         }}
       >
         {expanded && (
@@ -220,7 +232,7 @@ export default function ChatSidebar({
       </Box>
 
       {/* Nav Items */}
-      <List sx={{ flex: 1, py: 1 }}>
+      <List sx={{ py: 1, backgroundColor: 'skyblue' }}>
         {navItems.map((item) => {
           const active = pathname === item.href;
           return (
@@ -247,11 +259,8 @@ export default function ChatSidebar({
                 >
                   <ListItemIcon
                     sx={[
-                      {
-                        minWidth: 0,
-                        justifyContent: 'center',
-                      },
-                      expanded ? { mr: 1.5 } : { mr: 'auto' },
+                      { minWidth: 0, justifyContent: 'center', px: 1 },
+                      expanded ? { mr: 1.5 } : { mr: 0 },
                     ]}
                   >
                     {item.icon}
@@ -265,25 +274,23 @@ export default function ChatSidebar({
             </ListItem>
           );
         })}
-        <Divider sx={{ mx: 1, my: 1 }} />
-        {/* Recent Chats */}
+      </List>
 
+      <Divider sx={{ mx: 1, my: 1 }} />
+
+      {/* Recent Chats */}
+      <List
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+        }}
+        subheader={expanded && <ListSubheader>Recent Chats</ListSubheader>}
+      >
         {recentChats.length > 0 && (
           <>
-            {expanded && (
-              <Typography
-                sx={{
-                  fontSize: 12,
-                  color: 'var(--text-secondary, #888)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Recent
-              </Typography>
-            )}
-            {recentChats.slice(0, 2).map((chat) => {
+            {recentChats.slice(0, 6).map((chat) => {
               const chatActive = pathname === `/chat/${chat.id}`;
               return (
                 <ListItem
@@ -300,24 +307,12 @@ export default function ChatSidebar({
                       selected={chatActive}
                       onClick={() => handleNav(`/chat/${chat.id}`)}
                       sx={[
-                        { minHeight: 36, borderRadius: 1.5, mx: 0.5, px: 2.5 },
+                        { px: 4, py: 0 },
                         expanded
                           ? { justifyContent: 'initial' }
                           : { justifyContent: 'center' },
                       ]}
                     >
-                      <ListItemIcon
-                        sx={[
-                          {
-                            minWidth: 0,
-                            justifyContent: 'center',
-                            color: 'var(--text-secondary, #888)',
-                          },
-                          expanded ? { mr: 1.5 } : { mr: 'auto' },
-                        ]}
-                      >
-                        <DescriptionIcon sx={{ fontSize: 16 }} />
-                      </ListItemIcon>
                       <ListItemText
                         primary={chat.title}
                         sx={[expanded ? { opacity: 1 } : { opacity: 0 }]}

@@ -193,8 +193,6 @@ export default function ChatSidebar({
           alignItems: 'center',
           justifyContent: expanded ? 'space-between' : 'center',
           p: 1,
-
-          backgroundColor: 'black', // temporary
         }}
       >
         {expanded && (
@@ -232,7 +230,7 @@ export default function ChatSidebar({
       </Box>
 
       {/* Nav Items */}
-      <List sx={{ py: 1, backgroundColor: 'skyblue' }}>
+      <List sx={{ py: 1 }}>
         {navItems.map((item) => {
           const active = pathname === item.href;
           return (
@@ -250,6 +248,7 @@ export default function ChatSidebar({
                   selected={active}
                   onClick={() => handleNav(item.href)}
                   sx={[
+                    { m: 0, py: '4px' },
                     expanded
                       ? { justifyContent: 'initial' }
                       : {
@@ -281,7 +280,7 @@ export default function ChatSidebar({
       {/* Recent Chats */}
       <List
         sx={{
-          display: 'flex',
+          display: expanded ? 'flex' : 'none',
           flexDirection: 'column',
           overflowY: 'auto',
           overflowX: 'hidden',
@@ -307,7 +306,7 @@ export default function ChatSidebar({
                       selected={chatActive}
                       onClick={() => handleNav(`/chat/${chat.id}`)}
                       sx={[
-                        { px: 4, py: 0 },
+                        { py: 0 },
                         expanded
                           ? { justifyContent: 'initial' }
                           : { justifyContent: 'center' },
@@ -330,6 +329,7 @@ export default function ChatSidebar({
       <Divider />
       <Box
         sx={{
+          mt: 'auto',
           p: expanded ? 1.5 : 0.75,
           display: 'flex',
           justifyContent: expanded ? 'flex-start' : 'center',

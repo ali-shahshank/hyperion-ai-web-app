@@ -102,7 +102,7 @@ export default function MessageBubble({
         {isUser ? (
           <Box
             sx={{
-              bgcolor: 'var(--background-secondary, #F0F0F0)',
+              bgcolor: 'white',
               borderRadius: '16px 16px 4px 16px',
               px: 2,
               py: 1.25,
@@ -166,10 +166,12 @@ export default function MessageBubble({
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                code({ node, inline, className, children, ...props }: any) {
+                pre({ children }) {
+                  return <>{children}</>;
+                },
+                code({ className, children, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || '');
-                  return !inline && match ? (
+                  return match ? (
                     <SyntaxHighlighter
                       style={oneLight}
                       language={match[1]}

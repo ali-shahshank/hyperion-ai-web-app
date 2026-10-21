@@ -9,6 +9,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MicIcon from '@mui/icons-material/Mic';
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { CHAT_MODELS, DEFAULT_CHAT_MODEL } from '@/lib/models';
 
 interface PromptInputProps {
   onSubmit: (value: string) => void;
@@ -151,7 +152,8 @@ export default function PromptInput({
                 userSelect: 'none',
               }}
             >
-              Llama 3.3 · 70B
+              {CHAT_MODELS.find((m) => m.id === DEFAULT_CHAT_MODEL)?.label ??
+                'GPT OSS 120B'}
             </Typography>
             <Tooltip
               title={value.trim() ? 'Send message' : 'Type a message first'}

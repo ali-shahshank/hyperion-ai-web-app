@@ -11,6 +11,7 @@ import Alert from '@mui/material/Alert';
 import MessageBubble from '@/components/MessageBubble';
 import PromptInput from '@/components/PromptInput';
 import { createMessage, getChat } from '@/lib/actions';
+import { DEFAULT_CHAT_MODEL } from '@/lib/models';
 
 interface ChatPageProps {
   params: Promise<{ id: string }>;
@@ -44,7 +45,10 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   }, [id, router]);
 
   const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      body: { model: DEFAULT_CHAT_MODEL },
+    }),
     id,
     onFinish: async ({ message }) => {
       const text = getTextContent(

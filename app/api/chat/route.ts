@@ -1,20 +1,30 @@
-import { groq } from '@ai-sdk/groq';
-import { streamText, toTextStream, createTextStreamResponse } from 'ai';
+import {
+  streamText,
+  UIMessage,
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  toUIMessageStream,
+} from 'ai';
+import { DEFAULT_MODEL, isAllowedModel } from '@/lib/models';
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, model }: { messages: UIMessage[]; model?: string } =
+    await req.json();
+
+  // Validate model against allowlist — never trust raw client input
+  const resolvedModel = model && isAllowedModel(model) ? model : DEFAULT_MODEL;
 
   const result = streamText({
-    model: groq('llama-3.3-70b-versatile'),
-    instructions: `You are Hyperion, an AI assistant built for professionals. 
-    You help users summarize meetings, emails, and documents, extract insights, 
+    model: resolvedModel,
+    instructions: `You are Hyperion, an AI assistant built for professionals.
+    You help users summarize meetings, emails, and documents, extract insights,
     and create structured action plans. Be concise, accurate, and professional.`,
-    messages,
+    messages: await convertToModelMessages(messages),
   });
 
-  return createTextStreamResponse({
-    stream: toTextStream({ stream: result.stream }),
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
   });
 }

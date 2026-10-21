@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.74",
+    "@ai-sdk/gateway": "^4.0.121",
     "@ai-sdk/groq": "^4.0.57",
     "@ai-sdk/openai": "^4.0.86",
     "@ai-sdk/react": "^4.0.150",

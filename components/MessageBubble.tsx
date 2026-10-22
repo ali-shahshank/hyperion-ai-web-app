@@ -66,7 +66,7 @@ export default function MessageBubble({
             flexDirection: isUser ? 'row-reverse' : 'row',
           }}
         >
-          {isUser ? (
+          {/* {isUser ? (
             <Avatar
               src={userAvatarUrl}
               sx={{
@@ -79,7 +79,7 @@ export default function MessageBubble({
             >
               {initials}
             </Avatar>
-          ) : null}
+          ) : null} */}
           <Typography
             sx={{
               fontSize: 12,
@@ -102,10 +102,10 @@ export default function MessageBubble({
         {isUser ? (
           <Box
             sx={{
-              bgcolor: 'white',
+              bgcolor: 'gray',
               borderRadius: '16px 16px 4px 16px',
               px: 2,
-              py: 1.25,
+              py: 2,
               maxWidth: { xs: '90%', md: 560 },
             }}
           >

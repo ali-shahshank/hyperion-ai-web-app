@@ -16,6 +16,7 @@ interface PromptInputProps {
   isLoading?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  onStop?: () => void;
 }
 
 export default function PromptInput({

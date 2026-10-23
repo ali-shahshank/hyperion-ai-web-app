@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import MessageBubble from '@/components/MessageBubble';
 import PromptInput from '@/components/PromptInput';
-import { createMessage, getChat } from '@/lib/actions';
+import { createMessage, getChat, getMessages } from '@/lib/actions';
 import { DEFAULT_CHAT_MODEL } from '@/lib/models';
 
 interface ChatPageProps {
@@ -44,7 +44,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     });
   }, [id, router]);
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, stop, setMessages } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
       body: { model: DEFAULT_CHAT_MODEL },
@@ -58,32 +58,49 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         await createMessage({ chatId: id, role: 'assistant', content: text });
       }
     },
-    onError: () => {
-      setError('Something went wrong. Please try again.');
-    },
+    onError: () => setError('Something went wrong. Please try again.'),
   });
 
   const isStreaming = status === 'submitted' || status === 'streaming';
 
   // Send initial message from sessionStorage
   useEffect(() => {
-    if (!authChecked || sentInitial.current || messages.length > 0) return;
-    try {
-      const key = `chat_init_${id}`;
-      const stored = sessionStorage.getItem(key);
-      if (stored) {
-        sentInitial.current = true;
-        sessionStorage.removeItem(key);
-        handleSubmit(stored);
+    let cancelled = false;
+    getChat(id).then((chatResult) => {
+      if (cancelled) return;
+      if (chatResult?.error || !chatResult?.data) {
+        router.replace('/chat');
+        return;
       }
-    } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authChecked, id]);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+      getMessages(id).then((msgResult) => {
+        if (cancelled) return;
+        const existing = msgResult?.data ?? [];
+        if (existing.length > 0) {
+          setMessages(
+            existing.map((msg: any) => ({
+              id: msg.id,
+              role: msg.role as 'user' | 'assistant',
+              parts: [{ type: 'text' as const, text: msg.content }],
+            })),
+          );
+        } else if (!sentInitial.current) {
+          try {
+            const stored = sessionStorage.getItem(`chat_init_${id}`);
+            if (stored) {
+              sentInitial.current = true;
+              sessionStorage.removeItem(`chat_init_${id}`);
+              handleSubmit(stored);
+            }
+          } catch {}
+        }
+        setAuthChecked(true);
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, router]);
 
   const handleSubmit = async (text: string) => {
     setError(null);
@@ -204,6 +221,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
       >
         <PromptInput
           onSubmit={handleSubmit}
+          onStop={stop}
           isLoading={isStreaming}
           placeholder="Message Hyperion..."
         />

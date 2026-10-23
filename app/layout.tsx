@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from '@mui/material/styles';
+import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { Suspense } from 'react';
 import Loading from './loading';
 import WebVitals from '@/components/WebVitals';
@@ -71,6 +72,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        <InitColorSchemeScript
+          attribute="class"
+          defaultMode="system"
+        />
         <AppRouterCacheProvider options={{ nonce }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />

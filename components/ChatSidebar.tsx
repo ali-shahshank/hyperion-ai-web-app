@@ -43,7 +43,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
-  backgroundColor: 'var(--background-primary)',
+  backgroundColor: 'gray',
   display: 'flex',
   flexDirection: 'column',
   '& .MuiListSubheader-root': {
@@ -52,7 +52,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
     color: 'var(--text-secondary)',
-    backgroundColor: 'var(--background-primary)',
+    backgroundColor: 'gray',
     lineHeight: '2rem',
     paddingLeft: 16,
   },
@@ -65,7 +65,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   }),
   overflowX: 'hidden',
   width: `calc(${theme.spacing(9)} + 1px)`,
-  backgroundColor: 'var(--background-primary)',
+  backgroundColor: 'gray',
   display: 'flex',
   flexDirection: 'column',
 });

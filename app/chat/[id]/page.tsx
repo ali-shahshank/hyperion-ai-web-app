@@ -3,7 +3,7 @@
 import { use, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, UIMessage } from 'ai';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -16,6 +16,10 @@ import { DEFAULT_CHAT_MODEL } from '@/lib/models';
 interface ChatPageProps {
   params: Promise<{ id: string }>;
 }
+
+// testing pending and load state
+const isStreaming = status === 'submitted' || status === 'streaming';
+console.log('chat status:', status, 'isStreaming:', isStreaming);
 
 // Extract plain text from UIMessage parts
 function getTextContent(parts: { type: string; text?: string }[]): string {
@@ -50,7 +54,8 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
       body: { model: DEFAULT_CHAT_MODEL },
     }),
     id,
-    onFinish: async ({ message }) => {
+
+    onFinish: async ({ message }: { message: UIMessage }) => {
       const text = getTextContent(
         message.parts as { type: string; text?: string }[],
       );
@@ -144,9 +149,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
       >
         {messages.length === 0 && !isStreaming && (
           <Box sx={{ textAlign: 'center', mt: 8 }}>
-            <Typography
-              sx={{ color: 'var(--text-secondary, #888)', fontSize: 14 }}
-            >
+            <Typography sx={{ color: '#888', fontSize: 14 }}>
               Start the conversation...
             </Typography>
           </Box>
@@ -185,11 +188,9 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
             <CircularProgress
               size={14}
               thickness={5}
-              sx={{ color: 'var(--text-secondary, #999)' }}
+              sx={{ color: ' #999' }}
             />
-            <Typography
-              sx={{ fontSize: 13, color: 'var(--text-secondary, #999)' }}
-            >
+            <Typography sx={{ fontSize: 12, color: ' #999' }}>
               Thinking...
             </Typography>
           </Box>
@@ -215,8 +216,8 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         sx={{
           px: { xs: 2, md: 4 },
           py: 2,
-          borderTop: '1px solid var(--stroke-dark, #F0F0F0)',
-          bgcolor: 'var(--background-primary, #FFFFFF)',
+          borderTop: '1px solid  #F0F0F0',
+          bgcolor: '#FFFFFF',
         }}
       >
         <PromptInput

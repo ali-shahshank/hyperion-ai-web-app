@@ -56,9 +56,9 @@ export default function PromptInput({
     <Box sx={{ width: '100%', maxWidth: 768, mx: 'auto' }}>
       <Box
         sx={{
-          border: '1px solid var(--stroke-dark, #E0E0E0)',
+          border: '1px solid #E0E0E0',
           borderRadius: 3,
-          bgcolor: 'var(--background-primary, #FFFFFF)',
+          bgcolor: 'gray',
           boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
           px: 1.5,
           py: 1,
@@ -71,7 +71,7 @@ export default function PromptInput({
               size="small"
               disabled={disabled}
               sx={{
-                color: 'var(--text-secondary, #888)',
+                color: 'black',
                 mb: 0.25,
                 flexShrink: 0,
               }}
@@ -126,7 +126,7 @@ export default function PromptInput({
                 <IconButton
                   size="small"
                   disabled
-                  sx={{ color: 'var(--text-secondary, #BDBDBD)' }}
+                  sx={{ color: 'black' }}
                 >
                   <MicIcon fontSize="small" />
                 </IconButton>
@@ -137,7 +137,7 @@ export default function PromptInput({
                 <IconButton
                   size="small"
                   disabled
-                  sx={{ color: 'var(--text-secondary, #BDBDBD)' }}
+                  sx={{ color: 'black' }}
                 >
                   <GraphicEqIcon fontSize="small" />
                 </IconButton>
@@ -166,18 +166,10 @@ export default function PromptInput({
                   disabled={!value.trim() || isLoading || disabled}
                   sx={{
                     bgcolor:
-                      value.trim() && !isLoading
-                        ? 'var(--text-primary, #1A1A1A)'
-                        : 'var(--stroke-dark, #E0E0E0)',
-                    color:
-                      value.trim() && !isLoading
-                        ? '#fff'
-                        : 'var(--text-secondary, #999)',
+                      value.trim() && !isLoading ? ' #1A1A1A' : ' #E0E0E0)',
+                    color: value.trim() && !isLoading ? '#fff' : ' #999',
                     '&:hover': {
-                      bgcolor:
-                        value.trim() && !isLoading
-                          ? '#333'
-                          : 'var(--stroke-dark, #E0E0E0)',
+                      bgcolor: value.trim() && !isLoading ? '#333' : ' #E0E0E0',
                     },
                     width: 28,
                     height: 28,

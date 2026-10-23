@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from '@mui/material/styles';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
+import Providers from './providers';
 import { Suspense } from 'react';
 import Loading from './loading';
 import WebVitals from '@/components/WebVitals';
@@ -70,7 +71,10 @@ export default async function RootLayout({
   const nonce = headersList.get('x-nonce') ?? '';
 
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
       <body>
         <InitColorSchemeScript
           attribute="class"

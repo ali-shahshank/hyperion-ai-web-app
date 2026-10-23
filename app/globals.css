@@ -1,18 +1,5 @@
 @import 'tailwindcss';
 
 :root {
-  --background-primary: #f9f9f9;
-  --background-secondary: #212222;
-  --background-tertiary: rgba(0, 0, 0, 0.7);
-  --accent-primary: #0000ff;
-  --black: #000000;
-  --white: #ffffff;
-  --text-primary: rgba(0, 0, 0, 0.87);
-  --text-secondary: rgba(0, 0, 0, 0.6);
-  --text-disabled: rgba(0, 0, 0, 0.38);
-  --text-light-primary: #ffffff;
-  --text-light-secondary: rgba(255, 255, 255, 0.7);
-  --text-light-disabled: rgba(255, 255, 255, 0.38);
-  --stroke-dark: rgba(0, 0, 0, 0.12);
-  --stroke-light: rgba(255, 255, 255, 0.38);
+  --background-primary: rgba('');
 }

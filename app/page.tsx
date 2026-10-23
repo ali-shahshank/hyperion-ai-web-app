@@ -126,7 +126,6 @@ export default function HomePage() {
                 position: 'relative',
                 height: '100%',
                 width: '100%',
-                bgcolor: 'var(--background-secondary)',
                 border: '1px solid var(--stroke-dark)',
                 borderRadius: '16px',
                 overflow: 'hidden',

@@ -71,10 +71,7 @@ export default async function RootLayout({
   const nonce = headersList.get('x-nonce') ?? '';
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-    >
+    <html lang="en">
       <body>
         <InitColorSchemeScript
           attribute="class"

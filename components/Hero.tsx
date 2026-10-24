@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import ButtonSecondary from './ButtonSecondary';
+import Button from '@mui/material/Button';
 import Image from 'next/image';
 
 export default function Hero() {
@@ -59,10 +59,13 @@ export default function Hero() {
           AI workspace built for professionals. One platform — endless
           possibilities.
         </Typography>
-        <ButtonSecondary
-          label="Get Started"
-          href="/sign-up"
-        />
+        <Button
+          variant="contained"
+          href="/"
+          sx={{ borderRadius: 8 }}
+        >
+          Get Started
+        </Button>
       </Stack>
       {/* Hero image placeholder */}
       <Box

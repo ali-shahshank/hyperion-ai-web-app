@@ -9,7 +9,7 @@ import { Suspense } from 'react';
 import Loading from './loading';
 import WebVitals from '@/components/WebVitals';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from '@/app/theme/theme';
+import Providers from './providers';
 import './globals.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -77,10 +77,10 @@ export default async function RootLayout({
           defaultMode="system"
         />
         <AppRouterCacheProvider options={{ nonce }}>
-          <ThemeProvider theme={theme}>
+          <Providers>
             <CssBaseline />
             <Suspense fallback={<Loading />}>{children}</Suspense>
-          </ThemeProvider>
+          </Providers>
         </AppRouterCacheProvider>
         <Analytics />
         <SpeedInsights />

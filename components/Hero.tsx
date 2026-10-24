@@ -6,7 +6,7 @@ import ButtonSecondary from './ButtonSecondary';
 import Image from 'next/image';
 
 export default function Hero() {
-  return (
+  return ( 
     <Box
       component="section"
       aria-label="Hero"
@@ -40,10 +40,15 @@ export default function Hero() {
           }}
         />
         <Typography
-          variant="h3"
+          variant="h4"
           component="h1"
           sx={{
-            fontSize: { xs: '32px', sm: '40px', md: '48px' },
+            fontSize: {
+              xs: '32px',
+              sm: '40px',
+              md: '48px',
+              textAlign: 'center',
+            },
           }}
         >
           The Ultimate AI <Box component="span">Productivity Platform</Box>
@@ -53,7 +58,7 @@ export default function Hero() {
           component="p"
           sx={{
             fontSize: { xs: '16px', sm: '20px', md: '24px' },
-            fontWeight: 400,
+            textAlign: 'center',
           }}
         >
           AI workspace built for professionals. One platform — endless

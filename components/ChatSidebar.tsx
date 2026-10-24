@@ -345,6 +345,7 @@ export default function ChatSidebar({
           py: '8px',
           display: 'flex',
           justifyContent: expanded ? 'flex-start' : 'center',
+          backgroundColor: 'gray',
         }}
       >
         <Tooltip
@@ -415,7 +416,7 @@ export default function ChatSidebar({
           slotProps={{
             paper: {
               sx: {
-                backgroundColor: 'var(--background-primary)',
+                backgroundColor: 'gray',
                 minWidth: 160,
                 ...(expanded && { width: drawerWidth - 16 }),
               },

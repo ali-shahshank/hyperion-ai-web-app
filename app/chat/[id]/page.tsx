@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useRef, useState } from 'react';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
@@ -17,11 +17,6 @@ interface ChatPageProps {
   params: Promise<{ id: string }>;
 }
 
-// testing pending and load state
-const isStreaming = status === 'submitted' || status === 'streaming';
-console.log('chat status:', status, 'isStreaming:', isStreaming);
-
-// Extract plain text from UIMessage parts
 function getTextContent(parts: { type: string; text?: string }[]): string {
   return parts
     .filter((p): p is { type: 'text'; text: string } => p.type === 'text')
@@ -36,25 +31,20 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   const sentInitial = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  // const [mounted, setMounted] = useState(false);
 
-  // Verify chat exists and belongs to current user
-  useEffect(() => {
-    getChat(id).then((result) => {
-      if (result?.error || !result?.data) {
-        router.replace('/chat');
-      } else {
-        setAuthChecked(true);
-      }
-    });
-  }, [id, router]);
-
-  const { messages, sendMessage, status, stop, setMessages } = useChat({
+  const {
+    messages,
+    sendMessage,
+    stop,
+    setMessages,
+    status: chatStatus,
+  } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
       body: { model: DEFAULT_CHAT_MODEL },
     }),
     id,
-
     onFinish: async ({ message }: { message: UIMessage }) => {
       const text = getTextContent(
         message.parts as { type: string; text?: string }[],
@@ -66,9 +56,23 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     onError: () => setError('Something went wrong. Please try again.'),
   });
 
-  const isStreaming = status === 'submitted' || status === 'streaming';
+  // loading state
+  const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
+  console.log('chatStatus:', chatStatus);
 
-  // Send initial message from sessionStorage
+  const handleSubmit = useCallback(
+    async (text: string) => {
+      setError(null);
+      await createMessage({ chatId: id, role: 'user', content: text });
+      sendMessage({ parts: [{ type: 'text', text }] });
+    },
+    [id, sendMessage],
+  );
+
+  // Component mount
+  // useEffect(() => setMounted(true), []);
+
+  // Auth + load existing messages + sessionStorage init
   useEffect(() => {
     let cancelled = false;
     getChat(id).then((chatResult) => {
@@ -77,7 +81,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         router.replace('/chat');
         return;
       }
-
       getMessages(id).then((msgResult) => {
         if (cancelled) return;
         const existing = msgResult?.data ?? [];
@@ -105,13 +108,12 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     return () => {
       cancelled = true;
     };
-  }, [id, router]);
+  }, [id, router, handleSubmit, setMessages]);
 
-  const handleSubmit = async (text: string) => {
-    setError(null);
-    await createMessage({ chatId: id, role: 'user', content: text });
-    sendMessage({ parts: [{ type: 'text', text }] });
-  };
+  // Auto-scroll
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   if (!authChecked) {
     return (
@@ -137,7 +139,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         overflow: 'hidden',
       }}
     >
-      {/* Message thread */}
       <Box
         sx={{
           flex: 1,
@@ -147,9 +148,11 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
           flexDirection: 'column',
         }}
       >
-        {messages.length === 0 && !isStreaming && (
+        {messages.length === 0 && !isLoading && (
           <Box sx={{ textAlign: 'center', mt: 8 }}>
-            <Typography sx={{ color: '#888', fontSize: 14 }}>
+            <Typography
+              sx={{ color: 'var(--text-secondary, #888)', fontSize: 14 }}
+            >
               Start the conversation...
             </Typography>
           </Box>
@@ -161,7 +164,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
           );
           const nextRole = messages[i + 1]?.role;
           const showDivider = nextRole === 'user' && msg.role === 'assistant';
-
           return (
             <MessageBubble
               key={msg.id}
@@ -175,7 +177,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
           );
         })}
 
-        {isStreaming && (
+        {isLoading && (
           <Box
             sx={{
               display: 'flex',
@@ -188,9 +190,11 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
             <CircularProgress
               size={14}
               thickness={5}
-              sx={{ color: ' #999' }}
+              sx={{ color: 'var(--text-secondary, #999)' }}
             />
-            <Typography sx={{ fontSize: 12, color: ' #999' }}>
+            <Typography
+              sx={{ fontSize: 13, color: 'var(--text-secondary, #999)' }}
+            >
               Thinking...
             </Typography>
           </Box>
@@ -199,7 +203,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         <div ref={bottomRef} />
       </Box>
 
-      {/* Error */}
       {error && (
         <Box sx={{ px: { xs: 2, md: 4 }, pb: 1 }}>
           <Alert
@@ -211,19 +214,18 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         </Box>
       )}
 
-      {/* Sticky prompt input */}
       <Box
         sx={{
           px: { xs: 2, md: 4 },
           py: 2,
-          borderTop: '1px solid  #F0F0F0',
-          bgcolor: '#FFFFFF',
+          borderTop: '1px solid var(--stroke-dark, #F0F0F0)',
+          bgcolor: 'var(--background-primary, #FFFFFF)',
         }}
       >
         <PromptInput
           onSubmit={handleSubmit}
           onStop={stop}
-          isLoading={isStreaming}
+          isLoading={isLoading}
           placeholder="Message Hyperion..."
         />
       </Box>

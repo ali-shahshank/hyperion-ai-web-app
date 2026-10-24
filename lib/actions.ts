@@ -47,6 +47,7 @@ export async function createChat(title?: string, model?: string) {
     .select()
     .single();
   if (error) return { error: error.message };
+  revalidatePath('/chat', 'layout');
   return { data };
 }
 

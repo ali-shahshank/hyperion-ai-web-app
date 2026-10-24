@@ -13,6 +13,8 @@ type Task = Database['public']['Tables']['tasks']['Row'];
 // ==========================================
 // CHATS
 // ==========================================
+
+// Get Chats
 export async function getChats() {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -34,6 +36,7 @@ export async function getChat(id: string) {
   return { data };
 }
 
+// Create Chat
 export async function createChat(title?: string, model?: string) {
   const supabase = await createClient();
   const {
@@ -51,23 +54,45 @@ export async function createChat(title?: string, model?: string) {
   return { data };
 }
 
+// Update Chat Title
 export async function updateChatTitle(id: string, title: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from('chats').update({ title }).eq('id', id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+  const { error } = await supabase
+    .from('chats')
+    .update({ title })
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
+  revalidatePath('/chat', 'layout');
   return { success: true };
 }
 
+// Delete Chat
 export async function deleteChat(id: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from('chats').delete().eq('id', id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+  const { error } = await supabase
+    .from('chats')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
+  revalidatePath('/chat', 'layout');
   return { success: true };
 }
 
 // ==========================================
 // MESSAGES
 // ==========================================
+
+// Get Message
 export async function getMessages(chatId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -79,6 +104,7 @@ export async function getMessages(chatId: string) {
   return { data };
 }
 
+// Create Message
 export async function createMessage({
   chatId,
   role,
@@ -107,9 +133,18 @@ export async function createMessage({
   return { data };
 }
 
+// Delete Message
 export async function deleteMessage(id: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from('messages').delete().eq('id', id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+  const { error } = await supabase
+    .from('messages')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
 }
@@ -117,18 +152,21 @@ export async function deleteMessage(id: string) {
 // ==========================================
 // UPLOADS
 // ==========================================
+
+// Get Uploads
 export async function getUploads(chatId?: string) {
   const supabase = await createClient();
-  const query = supabase
+  let query = supabase
     .from('uploads')
     .select('*')
     .order('created_at', { ascending: false });
-  if (chatId) query.eq('chat_id', chatId);
+  if (chatId) query = query.eq('chat_id', chatId);
   const { data, error } = await query;
   if (error) return { error: error.message };
   return { data };
 }
 
+// Craete Upload
 export async function createUpload({
   chatId,
   fileName,
@@ -167,15 +205,20 @@ export async function createUpload({
   return { data };
 }
 
+// Delete Upload
 export async function deleteUpload(id: string, filePath: string) {
   const supabase = await createClient();
-
-  // Delete from storage
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
   const bucket = filePath.startsWith('images/') ? 'images' : 'documents';
   await supabase.storage.from(bucket).remove([filePath]);
-
-  // Delete metadata from db
-  const { error } = await supabase.from('uploads').delete().eq('id', id);
+  const { error } = await supabase
+    .from('uploads')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
 }
@@ -183,6 +226,8 @@ export async function deleteUpload(id: string, filePath: string) {
 // ==========================================
 // ACTION PLANS
 // ==========================================
+
+// Get Action Plan
 export async function getActionPlans(chatId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -194,6 +239,7 @@ export async function getActionPlans(chatId: string) {
   return { data };
 }
 
+// Create Action Plan
 export async function createActionPlan({
   chatId,
   title,
@@ -218,9 +264,18 @@ export async function createActionPlan({
   return { data };
 }
 
+// Delete Action Item
 export async function deleteActionPlan(id: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from('action_plans').delete().eq('id', id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+  const { error } = await supabase
+    .from('action_plans')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
 }
@@ -228,6 +283,8 @@ export async function deleteActionPlan(id: string) {
 // ==========================================
 // TASKS
 // ==========================================
+
+// Get Task
 export async function getTasks(actionPlanId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -239,6 +296,7 @@ export async function getTasks(actionPlanId: string) {
   return { data };
 }
 
+// Create Task
 export async function createTask({
   actionPlanId,
   title,
@@ -271,22 +329,37 @@ export async function createTask({
   return { data };
 }
 
+// Update Task Status
 export async function updateTaskStatus(
   id: string,
   status: 'pending' | 'in_progress' | 'completed',
 ) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
   const { error } = await supabase
     .from('tasks')
     .update({ status })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
 }
 
+// Delete Task
 export async function deleteTask(id: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from('tasks').delete().eq('id', id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized' };
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
 }

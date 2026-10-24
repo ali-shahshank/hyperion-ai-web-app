@@ -3,7 +3,7 @@
 import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, UIMessage } from 'ai';
+import { DefaultChatTransport } from 'ai';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -31,8 +31,8 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   const sentInitial = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
-  // const [mounted, setMounted] = useState(false);
 
+  // useChat
   const {
     messages,
     sendMessage,
@@ -42,23 +42,14 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
-      body: { model: DEFAULT_CHAT_MODEL },
+      body: { model: DEFAULT_CHAT_MODEL, chatId: id },
     }),
     id,
-    onFinish: async ({ message }: { message: UIMessage }) => {
-      const text = getTextContent(
-        message.parts as { type: string; text?: string }[],
-      );
-      if (text) {
-        await createMessage({ chatId: id, role: 'assistant', content: text });
-      }
-    },
     onError: () => setError('Something went wrong. Please try again.'),
   });
 
   // loading state
   const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
-  console.log('chatStatus:', chatStatus);
 
   const handleSubmit = useCallback(
     async (text: string) => {
@@ -68,9 +59,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     },
     [id, sendMessage],
   );
-
-  // Component mount
-  // useEffect(() => setMounted(true), []);
 
   // Auth + load existing messages + sessionStorage init
   useEffect(() => {

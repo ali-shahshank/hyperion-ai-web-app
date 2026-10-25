@@ -9,6 +9,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MicIcon from '@mui/icons-material/Mic';
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import StopIcon from '@mui/icons-material/Stop';
 import { CHAT_MODELS, DEFAULT_CHAT_MODEL } from '@/lib/models';
 
 interface PromptInputProps {
@@ -24,6 +25,7 @@ export default function PromptInput({
   isLoading = false,
   disabled = false,
   placeholder = 'Message Hyperion...',
+  onStop,
 }: PromptInputProps) {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -156,30 +158,52 @@ export default function PromptInput({
               {CHAT_MODELS.find((m) => m.id === DEFAULT_CHAT_MODEL)?.label ??
                 'GPT OSS 120B'}
             </Typography>
-            <Tooltip
-              title={value.trim() ? 'Send message' : 'Type a message first'}
-            >
-              <span>
+
+            {/* Prompt Send button */}
+            {isLoading ? (
+              <Tooltip title="Stop generating">
                 <IconButton
                   size="small"
-                  onClick={handleSubmit}
-                  disabled={!value.trim() || isLoading || disabled}
+                  onClick={onStop}
+                  aria-label="Stop generating"
                   sx={{
-                    bgcolor:
-                      value.trim() && !isLoading ? ' #1A1A1A' : ' #E0E0E0)',
-                    color: value.trim() && !isLoading ? '#fff' : ' #999',
-                    '&:hover': {
-                      bgcolor: value.trim() && !isLoading ? '#333' : ' #E0E0E0',
-                    },
+                    bgcolor: '#1A1A1A',
+                    color: '#fff',
+                    '&:hover': { bgcolor: '#333' },
                     width: 28,
                     height: 28,
-                    transition: 'background-color 0.15s',
                   }}
                 >
-                  <ArrowUpwardIcon sx={{ fontSize: 16 }} />
+                  <StopIcon sx={{ fontSize: 16 }} />
                 </IconButton>
-              </span>
-            </Tooltip>
+              </Tooltip>
+            ) : (
+              <Tooltip
+                title={value.trim() ? 'Send message' : 'Type a message first'}
+              >
+                <span>
+                  <IconButton
+                    size="small"
+                    onClick={handleSubmit}
+                    disabled={!value.trim() || disabled}
+                    aria-label="Send message"
+                    sx={{
+                      bgcolor:
+                        value.trim() && !disabled ? '#1A1A1A' : '#E0E0E0',
+                      color: value.trim() && !disabled ? '#fff' : '#999',
+                      '&:hover': {
+                        bgcolor: value.trim() && !disabled ? '#333' : '#E0E0E0',
+                      },
+                      width: 28,
+                      height: 28,
+                      transition: 'background-color 0.15s',
+                    }}
+                  >
+                    <ArrowUpwardIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
           </Box>
         </Box>
       </Box>

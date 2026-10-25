@@ -10,7 +10,12 @@ import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import MessageBubble from '@/components/MessageBubble';
 import PromptInput from '@/components/PromptInput';
-import { createMessage, getChat, getMessages } from '@/lib/actions';
+import {
+  createMessage,
+  deleteMessage,
+  getChat,
+  getMessages,
+} from '@/lib/actions';
 import { DEFAULT_CHAT_MODEL } from '@/lib/models';
 
 interface ChatPageProps {
@@ -31,6 +36,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   const sentInitial = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // useChat
   const {
@@ -48,9 +54,14 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     onError: () => setError('Something went wrong. Please try again.'),
   });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // loading state
   const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
 
+  // handle submit
   const handleSubmit = useCallback(
     async (text: string) => {
       setError(null);
@@ -59,6 +70,35 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     },
     [id, sendMessage],
   );
+
+  // handle message edits
+  const handleEdit = useCallback(
+    async (messageId: string, newContent: string) => {
+      const idx = messages.findIndex((m) => m.id === messageId);
+      if (idx === -1) return;
+      await Promise.all(messages.slice(idx).map((m) => deleteMessage(m.id)));
+      setMessages(messages.slice(0, idx));
+      await handleSubmit(newContent);
+    },
+    [messages, setMessages, handleSubmit],
+  );
+
+  // handle Regenerate
+  const handleRegenerate = useCallback(async () => {
+    const lastUserIdx = messages.reduceRight(
+      (found, msg, i) => (found !== -1 ? found : msg.role === 'user' ? i : -1),
+      -1,
+    );
+    if (lastUserIdx === -1) return;
+    const lastUserContent = getTextContent(
+      messages[lastUserIdx].parts as { type: string; text?: string }[],
+    );
+    await Promise.all(
+      messages.slice(lastUserIdx).map((m) => deleteMessage(m.id)),
+    );
+    setMessages(messages.slice(0, lastUserIdx));
+    await handleSubmit(lastUserContent);
+  }, [messages, setMessages, handleSubmit]);
 
   // Auth + load existing messages + sessionStorage init
   useEffect(() => {
@@ -103,7 +143,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  if (!authChecked) {
+  if (!mounted || !authChecked) {
     return (
       <Box
         sx={{
@@ -146,24 +186,35 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
           </Box>
         )}
 
-        {messages.map((msg, i) => {
-          const textContent = getTextContent(
-            msg.parts as { type: string; text?: string }[],
+        {(() => {
+          const lastAssistantIdx = messages.reduceRight(
+            (found, msg, i) =>
+              found !== -1 ? found : msg.role === 'assistant' ? i : -1,
+            -1,
           );
-          const nextRole = messages[i + 1]?.role;
-          const showDivider = nextRole === 'user' && msg.role === 'assistant';
-          return (
-            <MessageBubble
-              key={msg.id}
-              message={{
-                id: msg.id,
-                role: msg.role as 'user' | 'assistant',
-                content: textContent,
-              }}
-              showDivider={showDivider}
-            />
-          );
-        })}
+          return messages.map((msg, i) => {
+            const textContent = getTextContent(
+              msg.parts as { type: string; text?: string }[],
+            );
+            const nextRole = messages[i + 1]?.role;
+            const showDivider = nextRole === 'user' && msg.role === 'assistant';
+            return (
+              <MessageBubble
+                key={msg.id}
+                message={{
+                  id: msg.id,
+                  role: msg.role as 'user' | 'assistant',
+                  content: textContent,
+                }}
+                showDivider={showDivider}
+                isLast={i === lastAssistantIdx}
+                isLoading={isLoading}
+                onEdit={handleEdit}
+                onRegenerate={handleRegenerate}
+              />
+            );
+          });
+        })()}
 
         {isLoading && (
           <Box

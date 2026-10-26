@@ -10,14 +10,8 @@ export default function ButtonPrimary({ label, ...props }: AppButtonProps) {
     <Button
       variant="contained"
       size="medium"
+      sx={{ borderRadius: 8 }}
       {...props}
-      sx={{
-        bgcolor: 'var(--accent-primary)',
-        color: '#ffffff',
-        borderColor: 'var(--accent-primary)',
-        borderRadius: '24px',
-        ...props.sx,
-      }}
     >
       {label}
     </Button>

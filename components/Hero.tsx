@@ -2,8 +2,11 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import Image from 'next/image';
+import ButtonPrimary from './ButtonPrimary';
+import ButtonSecondary from './ButtonSecondary';
+import ButtonStandard from './ButtonStandard';
+import ButtonTertiary from './ButtonTertiary';
 
 export default function Hero() {
   return (
@@ -44,6 +47,7 @@ export default function Hero() {
           component="h1"
           sx={{
             fontSize: { xs: '32px', sm: '40px', md: '48px' },
+            textAlign: 'center',
           }}
         >
           The Ultimate AI <Box component="span">Productivity Platform</Box>
@@ -54,24 +58,23 @@ export default function Hero() {
           sx={{
             fontSize: { xs: '16px', sm: '20px', md: '24px' },
             fontWeight: 400,
+            textAlign: 'center',
           }}
         >
           AI workspace built for professionals. One platform — endless
           possibilities.
         </Typography>
-        <Button
-          variant="contained"
-          href="/"
-          sx={{ borderRadius: 8 }}
-        >
-          Get Started
-        </Button>
+        <ButtonPrimary
+          label="Get Started"
+          href="/sign-up"
+        />
       </Stack>
       {/* Hero image placeholder */}
       <Box
         sx={{
           px: { xs: '0px', sm: '0px', md: '64px' },
-          height: { xs: '220px', sm: '360px', md: '420px' },
+          py: { xs: '24px', sm: '24px', md: '24px' },
+          height: { xs: '240px', sm: '360px', md: '420px' },
         }}
       >
         <Box

@@ -8,16 +8,11 @@ interface AppButtonProps extends ButtonProps {
 export default function ButtonTertiary({ label, ...props }: AppButtonProps) {
   return (
     <Button
+      color="success"
       variant="outlined"
       size="medium"
       {...props}
-      sx={{
-        color: 'var(--background-secondary)',
-        borderColor: 'var(--background-secondary)',
-        borderRadius: '24px',
-        ...props.sx,
-        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
-      }}
+      sx={{ borderRadius: 8 }}
     >
       {label}
     </Button>

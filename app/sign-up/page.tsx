@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import ButtonStartIcon from '@/components/ButtonStartIcon';
 import GoogleIcon from '@mui/icons-material/Google';
 import MicrosoftIcon from '@mui/icons-material/Window';
-import ButtonSecondary from '@/components/ButtonSecondary';
+import ButtonPrimary from '@/components/ButtonPrimary';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -204,10 +204,10 @@ export default function SignUp() {
                 />
               </Stack>
 
-              <ButtonSecondary
+              <ButtonPrimary
                 type="submit"
                 fullWidth
-                size="large"
+                size="medium"
                 loading={isPending}
                 loadingPosition="start"
                 label={isPending ? 'Signing up...' : 'Sign Up'}

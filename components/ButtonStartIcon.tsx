@@ -13,17 +13,11 @@ const ButtonStartIcon = ({
 }: ButtonStartIconProps) => {
   return (
     <Button
-      size="large"
+      size="medium"
       variant={variant}
       startIcon={icon}
       {...rest}
-      sx={{
-        color: 'var(--background-secondary)',
-        border: '1px solid var(--background-secondary)',
-        textTransform: 'none',
-        borderRadius: '24px',
-        '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-      }}
+      sx={{ borderRadius: 8 }}
     >
       {label}
     </Button>

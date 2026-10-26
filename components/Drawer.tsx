@@ -8,12 +8,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Button from '@mui/material/Button';
 import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 import type { Page } from './Nav';
 import ButtonPrimary from './ButtonPrimary';
-import ButtonSecondary from './ButtonSecondary';
 import ButtonTertiary from './ButtonTertiary';
 
 interface AppDrawerProps {

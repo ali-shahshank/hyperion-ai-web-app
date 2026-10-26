@@ -3,12 +3,10 @@ import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { ThemeProvider } from '@mui/material/styles';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { Suspense } from 'react';
 import Loading from './loading';
 import WebVitals from '@/components/WebVitals';
-import CssBaseline from '@mui/material/CssBaseline';
 import Providers from './providers';
 import './globals.css';
 import '@fontsource/roboto/300.css';
@@ -25,7 +23,7 @@ export const metadata: Metadata = {
     template: '%s | Hyperion AI',
   },
   description:
-    'The AI workspace built for how professionals actually work. Automate meetings, emails, and documents into structured action plans.',
+    'The AI workspace built for knowledge workers. Automate meetings, emails, and documents into structured output.',
   robots: {
     index: true,
     follow: true,
@@ -34,7 +32,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Hyperion AI',
     title: 'Hyperion AI',
-    description: 'The AI workspace built for how professionals actually work.',
+    description: 'The AI workspace built for knowledge workers.',
     images: [
       {
         url: '/og-image.png',
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Hyperion AI',
-    description: 'The AI workspace built for how professionals actually work.',
+    description: 'The AI workspace built for knowledge workers.',
     images: ['/og-image.png'],
   },
 };
@@ -78,7 +76,6 @@ export default async function RootLayout({
         />
         <AppRouterCacheProvider options={{ nonce }}>
           <Providers>
-            <CssBaseline />
             <Suspense fallback={<Loading />}>{children}</Suspense>
           </Providers>
         </AppRouterCacheProvider>

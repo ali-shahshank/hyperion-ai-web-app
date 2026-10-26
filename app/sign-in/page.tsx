@@ -2,10 +2,10 @@
 import { useState, useTransition } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import ButtonPrimary from '@/components/ButtonPrimary';
 import ButtonStartIcon from '@/components/ButtonStartIcon';
 import GoogleIcon from '@mui/icons-material/Google';
 import MicrosoftIcon from '@mui/icons-material/Window';
-import ButtonSecondary from '@/components/ButtonSecondary';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -189,14 +189,13 @@ export default function SignIn() {
                   </Link>
                 </Typography>
               </Stack>
-
-              <ButtonSecondary
+              <ButtonPrimary
                 type="submit"
                 fullWidth
-                size="large"
+                size="medium"
                 loading={isPending}
                 loadingPosition="start"
-                label={isPending ? 'Signing in...' : 'Sign In'}
+                label={isPending ? 'Signing in...' : 'Sign-in'}
                 disabled={isPending}
               />
             </Stack>
@@ -204,11 +203,10 @@ export default function SignIn() {
             <Typography
               sx={{
                 fontSize: '14px',
-                color: 'var(--text-secondary)',
                 textAlign: 'center',
               }}
             >
-              Don't have an account?{' '}
+              Don't have an account?
               <Link
                 href="/sign-up"
                 style={{ fontWeight: 600, color: 'inherit' }}

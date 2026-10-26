@@ -9,14 +9,10 @@ export default function ButtonSecondary({ label, ...props }: AppButtonProps) {
   return (
     <Button
       variant="contained"
+      color="secondary"
       size="medium"
+      sx={{ borderRadius: 8 }}
       {...props}
-      sx={{
-        color: '#ffffff',
-        bgcolor: 'var(--background-secondary)',
-        borderColor: 'var(--background-secondary)',
-        borderRadius: '24px',
-      }}
     >
       {label}
     </Button>

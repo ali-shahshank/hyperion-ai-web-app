@@ -9,13 +9,8 @@ export default function ButtonStandard({ label, ...props }: AppButtonProps) {
   return (
     <Button
       size="medium"
+      sx={{ borderRadius: 8 }}
       {...props}
-      sx={{
-        borderRadius: '24px',
-        color: 'var(--background-secondary)',
-        ...props.sx,
-        '&:hover': { bgcolor: 'rgba(0,0,0,0.03)' },
-      }}
     >
       {label}
     </Button>

@@ -38,6 +38,9 @@ yarn-error.log*
 .env.local
 .env*.local
 
+# agents and skills
+.agents
+
 # vercel
 .vercel
 

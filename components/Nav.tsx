@@ -22,9 +22,6 @@ import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
 import ButtonTertiary from './ButtonTertiary';
 import Image from 'next/image';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 
 export interface Page {
   title: string;

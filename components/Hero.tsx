@@ -4,9 +4,6 @@ import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import ButtonPrimary from './ButtonPrimary';
-import ButtonSecondary from './ButtonSecondary';
-import ButtonStandard from './ButtonStandard';
-import ButtonTertiary from './ButtonTertiary';
 
 export default function Hero() {
   return (
@@ -14,9 +11,10 @@ export default function Hero() {
       component="section"
       aria-label="Hero"
       sx={{
-        pt: { xs: '40px', sm: '48px', md: '64px' },
+        pt: { xs: '96px', sm: '120px', md: '128px' },
         px: { xs: '16px', sm: '16px', md: '24px' },
         pb: { xs: '24px', sm: '24px', md: '24px' },
+        backgroundColor: 'background.paper',
       }}
     >
       <Stack
@@ -48,6 +46,7 @@ export default function Hero() {
           sx={{
             fontSize: { xs: '32px', sm: '40px', md: '48px' },
             textAlign: 'center',
+            color: 'text.primary',
           }}
         >
           The Ultimate AI <Box component="span">Productivity Platform</Box>
@@ -57,8 +56,8 @@ export default function Hero() {
           component="p"
           sx={{
             fontSize: { xs: '16px', sm: '20px', md: '24px' },
-            fontWeight: 400,
             textAlign: 'center',
+            color: 'text.secondary',
           }}
         >
           AI workspace built for professionals. One platform — endless

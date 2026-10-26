@@ -22,6 +22,9 @@ import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
 import ButtonTertiary from './ButtonTertiary';
 import Image from 'next/image';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 export interface Page {
   title: string;
@@ -62,17 +65,18 @@ export default function ResponsiveAppBar() {
 
   return (
     <AppBar
-      position="relative"
+      position="fixed"
       sx={{
         p: 0,
         mb: 0,
         dropShadow: 'none',
         boxShadow: 'none',
+        backgroundColor: 'background.paper',
       }}
     >
       <Container
         maxWidth="xl"
-        sx={{ p: 0, m: 0 }}
+        sx={{ p: 0, m: 0, backgroundColor: 'background.paper' }}
       >
         <Toolbar
           disableGutters
@@ -81,6 +85,7 @@ export default function ResponsiveAppBar() {
             justifyContent: 'space-between',
             m: 0,
             p: { xs: '16px', sm: '0px', md: '0px' },
+            backgroundColor: 'background.paper',
           }}
         >
           {/* Logo */}
@@ -123,11 +128,9 @@ export default function ResponsiveAppBar() {
                 component={Link}
                 href={page.link}
                 sx={{
-                  fontSize: '16px',
-                  textTransform: 'none',
-                  fontWeight: 400,
-                  color: 'black',
-                  '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
+                  color: 'text.secondary',
+                  letterSpacing: '1px',
+                  '&:hover': { background: 'rgba(0,0,0,0.04)' },
                 }}
               >
                 {page.title}

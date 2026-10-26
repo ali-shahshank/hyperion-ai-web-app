@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Hero from '@/components/Hero';
-import Box from '@mui/material/Box';
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
 import Features from '@/components/Features';

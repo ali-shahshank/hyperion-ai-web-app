@@ -24,7 +24,7 @@ export async function getChats() {
   if (error) return { error: error.message };
   return { data };
 }
-
+// Get Chat
 export async function getChat(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -221,6 +221,122 @@ export async function deleteUpload(id: string, filePath: string) {
     .eq('user_id', user.id);
   if (error) return { error: error.message };
   return { success: true };
+}
+
+// ==========================================
+// SEARCH CHATS
+// ==========================================
+
+export type ChatSearchResult = {
+  chatId: string;
+  chatTitle: string;
+  snippet: string;
+  matchType: 'title' | 'message';
+  createdAt: string;
+};
+
+// search chats
+export async function searchChats(
+  query: string,
+): Promise<{ data?: ChatSearchResult[]; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user) return { error: 'Unauthorized' };
+
+  const q = query.trim();
+  if (q.length < 2) return { data: [] };
+
+  const [{ data: chatRows }, { data: msgRows }] = await Promise.all([
+    supabase
+      .from('chats')
+      .select('id, title, created_at')
+      .eq('user_id', user.id)
+      .ilike('title', `%${q}%`)
+      .order('created_at', { ascending: false })
+      .limit(15),
+    supabase
+      .from('messages')
+      .select('chat_id, content, created_at')
+      .eq('user_id', user.id)
+      .eq('role', 'user')
+      .ilike('content', `%${q}%`)
+      .order('created_at', { ascending: false })
+      .limit(20),
+  ]);
+
+  const extractSnippet = (content: string, term: string): string => {
+    const idx = content.toLowerCase().indexOf(term.toLowerCase());
+    if (idx === -1)
+      return content.slice(0, 100) + (content.length > 100 ? '…' : '');
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(content.length, idx + term.length + 60);
+    return (
+      (start > 0 ? '…' : '') +
+      content.slice(start, end) +
+      (end < content.length ? '…' : '')
+    );
+  };
+
+  const results: ChatSearchResult[] = [];
+  const seenChatIds = new Set<string>();
+
+  // Title matches first
+  for (const chat of chatRows ?? []) {
+    seenChatIds.add(chat.id);
+    results.push({
+      chatId: chat.id,
+      chatTitle: chat.title,
+      snippet: '',
+      matchType: 'title',
+      createdAt: chat.created_at,
+    });
+  }
+
+  // Resolve chat titles for message matches not already in chatRows
+  const newChatIds = [
+    ...new Set(
+      (msgRows ?? [])
+        .map((m) => m.chat_id)
+        .filter((id) => !seenChatIds.has(id)),
+    ),
+  ];
+
+  const chatLookup = new Map<string, { title: string; created_at: string }>(
+    (chatRows ?? []).map((c) => [
+      c.id,
+      { title: c.title, created_at: c.created_at },
+    ]),
+  );
+
+  if (newChatIds.length > 0) {
+    const { data: extra } = await supabase
+      .from('chats')
+      .select('id, title, created_at')
+      .in('id', newChatIds);
+    for (const c of extra ?? [])
+      chatLookup.set(c.id, { title: c.title, created_at: c.created_at });
+  }
+
+  // Message matches — one result per unique chat
+  const seenMsgChats = new Set<string>();
+  for (const msg of msgRows ?? []) {
+    if (seenChatIds.has(msg.chat_id) || seenMsgChats.has(msg.chat_id)) continue;
+    const chat = chatLookup.get(msg.chat_id);
+    if (!chat) continue;
+    seenMsgChats.add(msg.chat_id);
+    results.push({
+      chatId: msg.chat_id,
+      chatTitle: chat.title,
+      snippet: extractSnippet(msg.content, q),
+      matchType: 'message',
+      createdAt: msg.created_at,
+    });
+  }
+
+  return { data: results };
 }
 
 // ==========================================

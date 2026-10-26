@@ -32,6 +32,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from '@/lib/actions';
+import ChatSearchModal from '@/components/ChatSearchModal';
 
 const SIDEBAR_KEY = 'hyperion_sidebar_open';
 const drawerWidth = 248;
@@ -43,7 +44,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
-  backgroundColor: 'gray',
+  backgroundColor: theme.palette.background.paper,
   display: 'flex',
   flexDirection: 'column',
   '& .MuiListSubheader-root': {
@@ -51,8 +52,8 @@ const openedMixin = (theme: Theme): CSSObject => ({
     fontWeight: 600,
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
-    color: 'var(--text-secondary)',
-    backgroundColor: 'gray',
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.paper,
     lineHeight: '2rem',
     paddingLeft: 16,
   },
@@ -65,7 +66,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   }),
   overflowX: 'hidden',
   width: `calc(${theme.spacing(9)} + 1px)`,
-  backgroundColor: 'gray',
+  backgroundColor: theme.palette.background.paper,
   display: 'flex',
   flexDirection: 'column',
 });
@@ -109,11 +110,7 @@ interface ChatSidebarProps {
 
 const navItems = [
   { icon: <EditIcon fontSize="medium" />, label: 'New Chat', href: '/chat' },
-  {
-    icon: <SearchIcon fontSize="medium" />,
-    label: 'Search',
-    href: '/chat/search',
-  },
+  { icon: <SearchIcon fontSize="medium" />, label: 'Search', href: '' },
   {
     icon: <DescriptionIcon fontSize="medium" />,
     label: 'Documents',
@@ -149,7 +146,21 @@ export default function ChatSidebar({
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
 
+  // Ctrl+K / Cmd+K global shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Restore sidebar open state from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem(SIDEBAR_KEY);
@@ -183,7 +194,6 @@ export default function ChatSidebar({
     .toUpperCase()
     .slice(0, 2);
 
-  // Shared drawer content — `expanded` allows mobile to always render open state
   const drawerContent = (expanded = open) => (
     <>
       {/* Header */}
@@ -197,14 +207,12 @@ export default function ChatSidebar({
       >
         {expanded && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 0.5 }}>
-            <Box>
-              <Image
-                src="/logo-mark.png"
-                alt="logo-mark"
-                height={24}
-                width={24}
-              />
-            </Box>
+            <Image
+              src="/logo-mark.png"
+              alt="logo-mark"
+              height={24}
+              width={24}
+            />
           </Box>
         )}
         <Tooltip
@@ -235,7 +243,7 @@ export default function ChatSidebar({
           const active = pathname === item.href;
           return (
             <ListItem
-              key={item.href}
+              key={item.label}
               disablePadding
               sx={{ display: 'block' }}
             >
@@ -246,14 +254,18 @@ export default function ChatSidebar({
               >
                 <ListItemButton
                   selected={active}
-                  onClick={() => handleNav(item.href)}
+                  onClick={() => {
+                    if (item.label === 'Search') {
+                      setSearchOpen(true);
+                      return;
+                    }
+                    router.push(item.href);
+                  }}
                   sx={[
                     { m: 0, py: '4px' },
                     expanded
                       ? { justifyContent: 'initial' }
-                      : {
-                          justifyContent: 'center',
-                        },
+                      : { justifyContent: 'center' },
                   ]}
                 >
                   <ListItemIcon
@@ -295,9 +307,7 @@ export default function ChatSidebar({
                 <ListItem
                   key={chat.id}
                   disablePadding
-                  sx={{
-                    display: 'block',
-                  }}
+                  sx={{ display: 'block' }}
                 >
                   <Tooltip
                     title={expanded ? '' : chat.title}
@@ -319,10 +329,7 @@ export default function ChatSidebar({
                         slotProps={{
                           primary: {
                             noWrap: true,
-                            sx: {
-                              fontSize: 14,
-                              color: 'var(--text-secondary)',
-                            },
+                            sx: { fontSize: 14, color: 'text.secondary' },
                           },
                         }}
                         sx={[expanded ? { opacity: 1 } : { opacity: 0 }]}
@@ -337,15 +344,14 @@ export default function ChatSidebar({
       </List>
 
       {/* User Card */}
-
       <Box
         sx={{
           mt: 'auto',
-          px: '16px',
-          py: '8px',
+          px: 2,
+          py: 1,
           display: 'flex',
           justifyContent: expanded ? 'flex-start' : 'center',
-          backgroundColor: 'gray',
+          backgroundColor: 'background.paper',
         }}
       >
         <Tooltip
@@ -360,12 +366,12 @@ export default function ChatSidebar({
               alignItems: 'center',
               gap: 1.5,
               cursor: 'pointer',
-              border: expanded ? '1px solid var(--stroke-dark)' : 'none',
+              border: expanded ? '1px solid' : 'none',
+              borderColor: expanded ? 'divider' : 'transparent',
               borderRadius: 1.5,
-              p: expanded ? '8px' : '0px',
-              py: '',
+              p: expanded ? 1 : 0,
               width: expanded ? '100%' : 'auto',
-              '&:hover': { bgcolor: '#f7f7f7' },
+              '&:hover': { bgcolor: 'action.hover' },
             }}
           >
             <Avatar
@@ -375,7 +381,7 @@ export default function ChatSidebar({
                 height: 32,
                 fontSize: 13,
                 fontWeight: 600,
-                bgcolor: 'var(--brand-primary, #1565C0)',
+                bgcolor: 'primary.main',
                 flexShrink: 0,
               }}
             >
@@ -385,17 +391,13 @@ export default function ChatSidebar({
               <Box sx={{ minWidth: 0 }}>
                 <Typography
                   noWrap
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: 'var(--text-primary, #1A1A1A)',
-                  }}
+                  sx={{ fontSize: 16, fontWeight: 600, color: 'text.primary' }}
                 >
                   {userName}
                 </Typography>
                 <Typography
                   noWrap
-                  sx={{ fontSize: 14, color: 'var(--text-secondary, #888)' }}
+                  sx={{ fontSize: 14, color: 'text.secondary' }}
                 >
                   {userEmail}
                 </Typography>
@@ -403,6 +405,7 @@ export default function ChatSidebar({
             )}
           </Box>
         </Tooltip>
+
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -416,7 +419,7 @@ export default function ChatSidebar({
           slotProps={{
             paper: {
               sx: {
-                backgroundColor: 'gray',
+                bgcolor: 'background.paper',
                 minWidth: 160,
                 ...(expanded && { width: drawerWidth - 16 }),
               },
@@ -472,7 +475,7 @@ export default function ChatSidebar({
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
-              backgroundColor: 'var(--background-secondary, #F5F5F5)',
+              bgcolor: 'background.default',
               display: 'flex',
               flexDirection: 'column',
             },
@@ -480,17 +483,27 @@ export default function ChatSidebar({
         >
           {drawerContent(true)}
         </MuiDrawer>
+        <ChatSearchModal
+          open={searchOpen}
+          onClose={() => setSearchOpen(false)}
+        />
       </>
     );
   }
 
   // Desktop: permanent mini drawer
   return (
-    <Drawer
-      variant="permanent"
-      open={open}
-    >
-      {drawerContent()}
-    </Drawer>
+    <>
+      <Drawer
+        variant="permanent"
+        open={open}
+      >
+        {drawerContent()}
+      </Drawer>
+      <ChatSearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
+    </>
   );
 }

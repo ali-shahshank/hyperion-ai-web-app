@@ -8,7 +8,6 @@ interface AppButtonProps extends ButtonProps {
 export default function ButtonTertiary({ label, ...props }: AppButtonProps) {
   return (
     <Button
-      color="success"
       variant="outlined"
       size="medium"
       {...props}

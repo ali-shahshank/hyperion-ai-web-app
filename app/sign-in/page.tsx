@@ -1,5 +1,6 @@
 'use client';
 import { useState, useTransition } from 'react';
+import Nav from '@/components/Nav';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import ButtonPrimary from '@/components/ButtonPrimary';
@@ -11,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Footer from '@/components/Footer';
-import Nav from '@/components/Nav';
+
 import Link from 'next/link';
 import {
   signInWithEmail,

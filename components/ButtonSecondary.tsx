@@ -12,10 +12,7 @@ export default function ButtonSecondary({ label, ...props }: AppButtonProps) {
       size="medium"
       {...props}
       sx={{
-        color: '#ffffff',
-        bgcolor: 'var(--background-secondary)',
-        borderColor: 'var(--background-secondary)',
-        borderRadius: '24px',
+        borderRadius: 8,
       }}
     >
       {label}

@@ -22,6 +22,30 @@ interface ChatPageProps {
   params: Promise<{ id: string }>;
 }
 
+// files to attachment - needs revision.
+async function filesToAttachments(
+  files: File[],
+): Promise<{ name: string; contentType: string; url: string }[]> {
+  return Promise.all(
+    files.map(
+      (file) =>
+        new Promise<{ name: string; contentType: string; url: string }>(
+          (resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () =>
+              resolve({
+                name: file.name,
+                contentType: file.type,
+                url: reader.result as string,
+              });
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          },
+        ),
+    ),
+  );
+}
+
 function getTextContent(parts: { type: string; text?: string }[]): string {
   return parts
     .filter((p): p is { type: 'text'; text: string } => p.type === 'text')

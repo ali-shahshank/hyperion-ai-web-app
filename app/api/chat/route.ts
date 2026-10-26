@@ -11,7 +11,7 @@ import { DEFAULT_CHAT_MODEL, isAllowedModel } from '@/lib/models';
 export const maxDuration = 60;
 
 const MAX_MESSAGES = 50;
-const MAX_PAYLOAD_BYTES = 32_768; // 32 KB
+const MAX_PAYLOAD_BYTES = 50 * 1024 * 1024; // file upload size
 
 function errorResponse(message: string, status: number): Response {
   return new Response(JSON.stringify({ error: message }), {

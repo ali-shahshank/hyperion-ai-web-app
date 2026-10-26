@@ -5,15 +5,43 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MicIcon from '@mui/icons-material/Mic';
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import StopIcon from '@mui/icons-material/Stop';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { CHAT_MODELS, DEFAULT_CHAT_MODEL } from '@/lib/models';
 
-interface PromptInputProps {
-  onSubmit: (value: string) => void;
+const ACCEPTED_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif',
+  'application/pdf',
+  'text/plain',
+  'text/csv',
+  'text/markdown',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+];
+
+const MAX_FILES = 5;
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+function FileChipIcon({ type }: { type: string }) {
+  if (type.startsWith('image/'))
+    return <ImageOutlinedIcon sx={{ fontSize: 14 }} />;
+  if (type === 'application/pdf')
+    return <PictureAsPdfIcon sx={{ fontSize: 14 }} />;
+  return <InsertDriveFileIcon sx={{ fontSize: 14 }} />;
+}
+
+export interface PromptInputProps {
+  onSubmit: (value: string, attachments: File[]) => void;
   isLoading?: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -28,16 +56,17 @@ export default function PromptInput({
   onStop,
 }: PromptInputProps) {
   const [value, setValue] = useState('');
+  const [attachments, setAttachments] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     const trimmed = value.trim();
-    if (!trimmed || isLoading || disabled) return;
-    onSubmit(trimmed);
+    if ((!trimmed && attachments.length === 0) || isLoading || disabled) return;
+    onSubmit(trimmed, attachments);
     setValue('');
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
+    setAttachments([]);
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -54,33 +83,86 @@ export default function PromptInput({
     el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const incoming = Array.from(e.target.files ?? []);
+    e.target.value = ''; // reset so same file can be re-added
+
+    const valid = incoming.filter(
+      (f) => ACCEPTED_TYPES.includes(f.type) && f.size <= MAX_FILE_BYTES,
+    );
+
+    setAttachments((prev) => [...prev, ...valid].slice(0, MAX_FILES));
+  };
+
+  const removeAttachment = (index: number) =>
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+
+  const atFileLimit = attachments.length >= MAX_FILES;
+  const canSend =
+    (value.trim().length > 0 || attachments.length > 0) && !disabled;
+
   return (
     <Box sx={{ width: '100%', maxWidth: 768, mx: 'auto' }}>
       <Box
         sx={{
-          border: '1px solid #E0E0E0',
+          border: '1px solid',
+          borderColor: 'divider',
           borderRadius: 3,
-          bgcolor: 'gray',
+          bgcolor: 'background.paper',
           boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
           px: 1.5,
           py: 1,
         }}
       >
-        {/* Top row: attachment + textarea */}
+        {/* Attachment chips */}
+        {attachments.length > 0 && (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 1 }}>
+            {attachments.map((file, i) => (
+              <Chip
+                key={i}
+                label={file.name}
+                size="small"
+                icon={<FileChipIcon type={file.type} />}
+                onDelete={() => removeAttachment(i)}
+                sx={{ fontSize: 12, maxWidth: 200 }}
+              />
+            ))}
+          </Box>
+        )}
+
+        {/* Top row: paperclip + textarea */}
         <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 0.5 }}>
-          <Tooltip title="Attach file">
-            <IconButton
-              size="small"
-              disabled={disabled}
-              sx={{
-                color: 'black',
-                mb: 0.25,
-                flexShrink: 0,
-              }}
-            >
-              <AttachFileIcon fontSize="small" />
-            </IconButton>
+          <Tooltip
+            title={atFileLimit ? `Max ${MAX_FILES} files` : 'Attach file'}
+          >
+            <span>
+              <IconButton
+                size="small"
+                disabled={disabled || atFileLimit}
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Attach file"
+                sx={{
+                  color:
+                    attachments.length > 0 ? 'primary.main' : 'text.secondary',
+                  mb: 0.25,
+                  flexShrink: 0,
+                }}
+              >
+                <AttachFileIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept={ACCEPTED_TYPES.join(',')}
+            onChange={handleFileChange}
+            aria-label="File input"
+            style={{ display: 'none' }}
+          />
 
           <Box sx={{ flex: 1 }}>
             <textarea
@@ -102,7 +184,7 @@ export default function PromptInput({
                 background: 'transparent',
                 fontSize: 14,
                 lineHeight: '1.6',
-                color: 'var(--text-primary, #1A1A1A)',
+                color: 'inherit',
                 fontFamily: 'inherit',
                 padding: '4px 0',
                 minHeight: 32,
@@ -113,7 +195,7 @@ export default function PromptInput({
           </Box>
         </Box>
 
-        {/* Bottom row: mic + waveform | model label | send */}
+        {/* Bottom row: mic + waveform | model label | send/stop */}
         <Box
           sx={{
             display: 'flex',
@@ -128,7 +210,7 @@ export default function PromptInput({
                 <IconButton
                   size="small"
                   disabled
-                  sx={{ color: 'black' }}
+                  sx={{ color: 'text.secondary' }}
                 >
                   <MicIcon fontSize="small" />
                 </IconButton>
@@ -139,7 +221,7 @@ export default function PromptInput({
                 <IconButton
                   size="small"
                   disabled
-                  sx={{ color: 'black' }}
+                  sx={{ color: 'text.secondary' }}
                 >
                   <GraphicEqIcon fontSize="small" />
                 </IconButton>
@@ -149,17 +231,12 @@ export default function PromptInput({
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography
-              sx={{
-                fontSize: 12,
-                color: 'var(--text-secondary, #BDBDBD)',
-                userSelect: 'none',
-              }}
+              sx={{ fontSize: 12, color: 'text.secondary', userSelect: 'none' }}
             >
               {CHAT_MODELS.find((m) => m.id === DEFAULT_CHAT_MODEL)?.label ??
                 'GPT OSS 120B'}
             </Typography>
 
-            {/* Prompt Send button */}
             {isLoading ? (
               <Tooltip title="Stop generating">
                 <IconButton
@@ -167,9 +244,9 @@ export default function PromptInput({
                   onClick={onStop}
                   aria-label="Stop generating"
                   sx={{
-                    bgcolor: '#1A1A1A',
-                    color: '#fff',
-                    '&:hover': { bgcolor: '#333' },
+                    bgcolor: 'text.primary',
+                    color: 'background.paper',
+                    '&:hover': { opacity: 0.85 },
                     width: 28,
                     height: 28,
                   }}
@@ -179,21 +256,22 @@ export default function PromptInput({
               </Tooltip>
             ) : (
               <Tooltip
-                title={value.trim() ? 'Send message' : 'Type a message first'}
+                title={
+                  canSend ? 'Send message' : 'Type a message or attach a file'
+                }
               >
                 <span>
                   <IconButton
                     size="small"
                     onClick={handleSubmit}
-                    disabled={!value.trim() || disabled}
+                    disabled={!canSend}
                     aria-label="Send message"
                     sx={{
-                      bgcolor:
-                        value.trim() && !disabled ? '#1A1A1A' : '#E0E0E0',
-                      color: value.trim() && !disabled ? '#fff' : '#999',
-                      '&:hover': {
-                        bgcolor: value.trim() && !disabled ? '#333' : '#E0E0E0',
-                      },
+                      bgcolor: canSend
+                        ? 'text.primary'
+                        : 'action.disabledBackground',
+                      color: canSend ? 'background.paper' : 'action.disabled',
+                      '&:hover': { opacity: 0.85 },
                       width: 28,
                       height: 28,
                       transition: 'background-color 0.15s',
@@ -208,11 +286,10 @@ export default function PromptInput({
         </Box>
       </Box>
 
-      {/* Model label below */}
       <Typography
         sx={{
           fontSize: 12,
-          color: 'var(--text-secondary, #BDBDBD)',
+          color: 'text.secondary',
           textAlign: 'center',
           mt: 0.75,
         }}

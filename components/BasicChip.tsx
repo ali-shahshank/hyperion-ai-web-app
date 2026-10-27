@@ -11,11 +11,9 @@ export default function BasicChip({ label, ...props }: BasicChipProps) {
       {...props}
       label={label}
       sx={{
-        backgroundClip: 'success.dark',
         fontWeight: 500,
         textTransform: 'uppercase',
         letterSpacing: '1px',
-        border: '2px solid',
       }}
     />
   );

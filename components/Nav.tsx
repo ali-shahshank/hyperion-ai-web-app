@@ -22,6 +22,9 @@ import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
 import ButtonTertiary from './ButtonTertiary';
 import Image from 'next/image';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useColorScheme } from '@mui/material/styles';
 
 export interface Page {
   title: string;
@@ -41,7 +44,22 @@ export default function ResponsiveAppBar() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const supabase = createClient();
+  const { mode, systemMode, setMode } = useColorScheme();
+  const [mounted, setMounted] = useState(false);
 
+  // theme toggle
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // current mode
+  const currentMode = mode === 'system' ? systemMode : mode;
+
+  const toggleTheme = () => {
+    setMode(currentMode === 'dark' ? 'light' : 'dark');
+  };
+
+  // supabase
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
 
@@ -54,6 +72,7 @@ export default function ResponsiveAppBar() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // handle sign-out
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push('/');
@@ -145,6 +164,23 @@ export default function ResponsiveAppBar() {
               gap: 1,
             }}
           >
+            {/* Them toggle button */}
+            <IconButton
+              onClick={toggleTheme}
+              disabled={!mounted || !currentMode}
+              aria-label={
+                mounted && currentMode === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
+              }
+              sx={{ color: 'text.primary' }}
+            >
+              {mounted && currentMode === 'dark' ? (
+                <LightModeIcon />
+              ) : (
+                <DarkModeIcon />
+              )}
+            </IconButton>
             {user ? (
               <>
                 <ButtonStandard
@@ -172,6 +208,24 @@ export default function ResponsiveAppBar() {
 
           {/* Mobile Hamburger */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            {/* Theme toggle */}
+            <IconButton
+              onClick={toggleTheme}
+              disabled={!mounted || !currentMode}
+              aria-label={
+                mounted && currentMode === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
+              }
+              sx={{ color: 'text.primary' }}
+            >
+              {mounted && currentMode === 'dark' ? (
+                <LightModeIcon />
+              ) : (
+                <DarkModeIcon />
+              )}
+            </IconButton>
+            {/* hanburger icon */}
             <IconButton
               onClick={() => setDrawerOpen(true)}
               aria-label="Open navigation menu"

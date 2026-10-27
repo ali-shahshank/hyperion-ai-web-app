@@ -26,10 +26,7 @@ export default function Hero() {
           alignItems: 'center',
         }}
       >
-        <BasicChip
-          color="success"
-          label="Inference Native Architecture"
-        />
+        <BasicChip label="Inference Native Architecture" />
         <Typography
           variant="h4"
           component="h4"

@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
+import BasicChip from '../components/BasicChip';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import ButtonPrimary from './ButtonPrimary';
@@ -26,23 +26,13 @@ export default function Hero() {
           alignItems: 'center',
         }}
       >
-        <Chip
-          label="Inference native architecture"
-          variant="outlined"
-          sx={{
-            textTransform: 'uppercase',
-            fontSize: '12px',
-            fontWeight: 400,
-            letterSpacing: '0.46px',
-            color: 'rgba(0,0,200,0.8)',
-            borderColor: 'rgba(0,0,255,0.4)',
-            bgcolor: 'rgba(0,0,255,0.06)',
-            borderRadius: '24px',
-          }}
+        <BasicChip
+          color="success"
+          label="Inference Native Architecture"
         />
         <Typography
-          variant="h3"
-          component="h1"
+          variant="h4"
+          component="h4"
           sx={{
             fontSize: { xs: '32px', sm: '40px', md: '48px' },
             textAlign: 'center',

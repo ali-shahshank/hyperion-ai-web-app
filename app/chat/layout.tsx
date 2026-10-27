@@ -43,7 +43,7 @@ export default async function ChatLayout({
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          bgcolor: 'var(--background-primary, #FFFFFF)',
+          bgcolor: 'background.paper',
         }}
       >
         <Suspense

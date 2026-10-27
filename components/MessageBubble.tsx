@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -15,18 +16,28 @@ import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import ReplayIcon from '@mui/icons-material/Replay';
 import CloseIcon from '@mui/icons-material/Close';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+
+interface FilePart extends Record<string, unknown> {
+  type: 'file';
+  mediaType: string;
+  filename?: string;
+  url: string;
+}
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  /** Pass message.createdAt from the UIMessage / DB row so timestamps render */
   createdAt?: Date;
+  parts?: Array<Record<string, unknown> & { type: string }>;
 }
 
 interface MessageBubbleProps {
   message: Message;
   userName?: string;
-  userAvatarUrl?: string;
   showDivider?: boolean;
   isLast?: boolean;
   isLoading?: boolean;
@@ -39,7 +50,6 @@ function formatTime(date?: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// Per-code-block copy button with its own copied state
 function CodeBlock({
   language,
   children,
@@ -71,16 +81,17 @@ function CodeBlock({
             zIndex: 1,
             width: 24,
             height: 24,
-            bgcolor: 'rgba(255,255,255,0.9)',
-            border: '1px solid #E0E0E0',
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
             borderRadius: 1,
-            '&:hover': { bgcolor: '#fff' },
+            '&:hover': { bgcolor: 'background.paper', opacity: 0.85 },
           }}
         >
           {copied ? (
-            <CheckIcon sx={{ fontSize: 12, color: '#4CAF50' }} />
+            <CheckIcon sx={{ fontSize: 12, color: 'success.main' }} />
           ) : (
-            <ContentCopyIcon sx={{ fontSize: 12, color: '#888888' }} />
+            <ContentCopyIcon sx={{ fontSize: 12, color: 'text.secondary' }} />
           )}
         </IconButton>
       </Tooltip>
@@ -92,7 +103,7 @@ function CodeBlock({
           borderRadius: 8,
           fontSize: 13,
           margin: 0,
-          border: '1px solid #E0E0E0',
+          border: '1px solid rgba(0,0,0,0.12)',
         }}
       >
         {children}
@@ -112,6 +123,10 @@ export default function MessageBubble({
 }: MessageBubbleProps) {
   const isUser = message.role === 'user';
   const time = formatTime(message.createdAt);
+
+  const fileParts = (message.parts ?? []).filter(
+    (p): p is FilePart => p.type === 'file',
+  );
 
   const [hovered, setHovered] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -158,7 +173,7 @@ export default function MessageBubble({
           flexDirection: 'column',
           alignItems: isUser ? 'flex-end' : 'flex-start',
           px: { xs: 2, md: 4 },
-          py: 1,
+          py: 4,
           maxWidth: '100%',
         }}
       >
@@ -173,53 +188,60 @@ export default function MessageBubble({
           }}
         >
           <Typography
-            sx={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: '#888888',
-            }}
+            sx={{ fontSize: 12, fontWeight: 600, color: 'text.secondary' }}
           >
             {isUser ? userName : 'Assistant'}
           </Typography>
-          {time && (
-            <Typography sx={{ fontSize: 11, color: '#BDBDBD' }}>
+          {time ? (
+            <Typography sx={{ fontSize: 12, color: 'text.disabled' }}>
               {time}
             </Typography>
-          )}
+          ) : null}
         </Box>
 
         {/* Bubble / content */}
         {isUser ? (
           editing ? (
+            /* ── Edit mode ── */
             <Box sx={{ maxWidth: { xs: '90%', md: 560 }, width: '100%' }}>
-              <textarea
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    void handleEditSubmit();
-                  }
-                  if (e.key === 'Escape') handleEditCancel();
+              {/* Themed border wrapper — raw textarea can't consume sx tokens */}
+              <Box
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'primary.main',
+                  borderRadius: '12px',
+                  '&:focus-within': { borderColor: 'primary.main' },
                 }}
-                autoFocus
-                aria-label="Edit message"
-                style={{
-                  width: '100%',
-                  resize: 'none',
-                  border: '1px solid #1565C0',
-                  borderRadius: 12,
-                  outline: 'none',
-                  padding: '10px 14px',
-                  fontSize: 14,
-                  lineHeight: '1.6',
-                  fontFamily: 'inherit',
-                  background: '#ffffff',
-                  color: '#1A1A1A',
-                  minHeight: 60,
-                  boxSizing: 'border-box',
-                }}
-              />
+              >
+                <textarea
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      void handleEditSubmit();
+                    }
+                    if (e.key === 'Escape') handleEditCancel();
+                  }}
+                  autoFocus
+                  aria-label="Edit message"
+                  style={{
+                    width: '100%',
+                    resize: 'none',
+                    border: 'none',
+                    borderRadius: 12,
+                    outline: 'none',
+                    padding: '10px 14px',
+                    fontSize: 14,
+                    lineHeight: '1.6',
+                    fontFamily: 'inherit',
+                    background: 'transparent',
+                    color: 'inherit',
+                    minHeight: 60,
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </Box>
               <Box
                 sx={{
                   display: 'flex',
@@ -233,7 +255,7 @@ export default function MessageBubble({
                     size="small"
                     onClick={handleEditCancel}
                     aria-label="Cancel edit"
-                    sx={{ color: '#888' }}
+                    sx={{ color: 'text.secondary' }}
                   >
                     <CloseIcon sx={{ fontSize: 16 }} />
                   </IconButton>
@@ -249,12 +271,11 @@ export default function MessageBubble({
                       }
                       aria-label="Save and resubmit"
                       sx={{
-                        bgcolor: '#1A1A1A',
-                        color: '#fff',
+                        bgcolor: 'text.primary',
+                        color: 'background.paper',
                         width: 28,
                         height: 28,
-                        '&:hover': { bgcolor: '#333' },
-                        '&.Mui-disabled': { bgcolor: '#E0E0E0', color: '#999' },
+                        '&:hover': { opacity: 0.85 },
                       }}
                     >
                       <CheckIcon sx={{ fontSize: 16 }} />
@@ -264,41 +285,100 @@ export default function MessageBubble({
               </Box>
             </Box>
           ) : (
+            /* ── User bubble ── */
             <Box
               sx={{
-                bgcolor: 'gray',
-                borderRadius: '16px 16px 4px 16px',
-                px: 2,
-                py: 2,
                 maxWidth: { xs: '90%', md: 560 },
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: 1,
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  color: ' #1A1A1A',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {message.content}
-              </Typography>
+              {/* File attachments */}
+              {fileParts.length > 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 0.75,
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  {fileParts.map((part, i) =>
+                    part.mediaType.startsWith('image/') ? (
+                      <Box
+                        key={i}
+                        component="img"
+                        src={part.url}
+                        alt={part.filename ?? 'attachment'}
+                        sx={{
+                          maxWidth: 260,
+                          maxHeight: 200,
+                          borderRadius: 2,
+                          objectFit: 'contain',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                        }}
+                      />
+                    ) : (
+                      <Chip
+                        key={i}
+                        size="small"
+                        icon={
+                          part.mediaType === 'application/pdf' ? (
+                            <PictureAsPdfIcon sx={{ fontSize: 14 }} />
+                          ) : (
+                            <InsertDriveFileIcon sx={{ fontSize: 14 }} />
+                          )
+                        }
+                        label={part.filename ?? part.mediaType}
+                        sx={{ fontSize: 12, maxWidth: 200 }}
+                      />
+                    ),
+                  )}
+                </Box>
+              )}
+
+              {/* Text bubble */}
+              {message.content && (
+                <Box
+                  sx={{
+                    bgcolor: 'grey.200',
+                    borderRadius: '16px 16px 4px 16px',
+                    px: 2,
+                    py: 1.5,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      color: 'text.primary',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {message.content}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           )
         ) : (
+          /* ── Assistant bubble ── */
           <Box
             sx={{
               maxWidth: { xs: '95%', md: 680 },
               fontSize: 14,
               lineHeight: 1.7,
-              color: '#1A1A1A',
+              color: 'text.primary',
               '& p': { mt: 0, mb: 1 },
               '& ul, & ol': { pl: 3, mb: 1 },
               '& li': { mb: 0.25 },
               '& h1, & h2, & h3': { fontWeight: 600, mt: 2, mb: 0.5 },
               '& code': {
-                bgcolor: ' #F5F5F5',
+                bgcolor: 'action.hover',
                 borderRadius: 0.5,
                 px: 0.5,
                 fontSize: 13,
@@ -306,21 +386,23 @@ export default function MessageBubble({
               },
               '& pre': { m: 0 },
               '& blockquote': {
-                borderLeft: '3px #E0E0E0',
+                borderLeft: '3px solid',
+                borderColor: 'divider',
                 pl: 2,
                 ml: 0,
-                color: '#666666',
+                color: 'text.secondary',
               },
               '& table': { borderCollapse: 'collapse', width: '100%', mb: 1 },
               '& th, & td': {
-                border: '1px #E0E0E0',
+                border: '1px solid',
+                borderColor: 'divider',
                 px: 1.5,
                 py: 0.5,
                 fontSize: 13,
               },
               '& th': {
                 fontWeight: 600,
-                bgcolor: '#f5f5f5',
+                bgcolor: 'action.hover',
               },
             }}
           >
@@ -354,20 +436,22 @@ export default function MessageBubble({
 
         {/* Action bar — hover-revealed */}
         {showActions && (
-          <Box sx={{ display: 'flex', gap: 0.25, mt: 0.5 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 0.25,
+              mt: 0.5,
+            }}
+          >
             <Tooltip title={copied ? 'Copied!' : 'Copy'}>
               <IconButton
                 size="small"
                 onClick={handleCopy}
                 aria-label="Copy message"
-                sx={{
-                  color: '#888888',
-                  width: 28,
-                  height: 28,
-                }}
+                sx={{ color: 'text.secondary', width: 28, height: 28 }}
               >
                 {copied ? (
-                  <CheckIcon sx={{ fontSize: 14, color: '#4CAF50' }} />
+                  <CheckIcon sx={{ fontSize: 14, color: 'success.main' }} />
                 ) : (
                   <ContentCopyIcon sx={{ fontSize: 14 }} />
                 )}
@@ -380,11 +464,7 @@ export default function MessageBubble({
                   size="small"
                   onClick={handleEditStart}
                   aria-label="Edit message"
-                  sx={{
-                    color: '#888',
-                    width: 28,
-                    height: 28,
-                  }}
+                  sx={{ color: 'text.secondary', width: 28, height: 28 }}
                 >
                   <EditIcon sx={{ fontSize: 14 }} />
                 </IconButton>
@@ -397,11 +477,7 @@ export default function MessageBubble({
                   size="small"
                   onClick={onRegenerate}
                   aria-label="Regenerate response"
-                  sx={{
-                    color: '#888',
-                    width: 28,
-                    height: 28,
-                  }}
+                  sx={{ color: 'text.secondary', width: 28, height: 28 }}
                 >
                   <ReplayIcon sx={{ fontSize: 14 }} />
                 </IconButton>

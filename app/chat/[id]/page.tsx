@@ -22,26 +22,27 @@ interface ChatPageProps {
   params: Promise<{ id: string }>;
 }
 
-// files to attachment - needs revision.
-async function filesToAttachments(
-  files: File[],
-): Promise<{ name: string; contentType: string; url: string }[]> {
+async function filesToParts(files: File[]) {
   return Promise.all(
     files.map(
       (file) =>
-        new Promise<{ name: string; contentType: string; url: string }>(
-          (resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () =>
-              resolve({
-                name: file.name,
-                contentType: file.type,
-                url: reader.result as string,
-              });
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          },
-        ),
+        new Promise<{
+          type: 'file';
+          filename: string;
+          mediaType: string;
+          url: string;
+        }>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () =>
+            resolve({
+              type: 'file',
+              filename: file.name,
+              mediaType: file.type,
+              url: reader.result as string,
+            });
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        }),
     ),
   );
 }
@@ -62,7 +63,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   const [authChecked, setAuthChecked] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // useChat
   const {
     messages,
     sendMessage,
@@ -82,20 +82,21 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     setMounted(true);
   }, []);
 
-  // loading state
   const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
 
-  // handle submit
   const handleSubmit = useCallback(
-    async (text: string) => {
+    async (content: string, files: File[] = []) => {
       setError(null);
-      await createMessage({ chatId: id, role: 'user', content: text });
-      sendMessage({ parts: [{ type: 'text', text }] });
+      const fileParts = files.length > 0 ? await filesToParts(files) : [];
+      await createMessage({ chatId: id, role: 'user', content });
+      sendMessage({
+        role: 'user',
+        parts: [...fileParts, { type: 'text', text: content }],
+      });
     },
     [id, sendMessage],
   );
 
-  // handle message edits
   const handleEdit = useCallback(
     async (messageId: string, newContent: string) => {
       const idx = messages.findIndex((m) => m.id === messageId);
@@ -107,7 +108,6 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     [messages, setMessages, handleSubmit],
   );
 
-  // handle Regenerate
   const handleRegenerate = useCallback(async () => {
     const lastUserIdx = messages.reduceRight(
       (found, msg, i) => (found !== -1 ? found : msg.role === 'user' ? i : -1),
@@ -142,6 +142,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
               id: msg.id,
               role: msg.role as 'user' | 'assistant',
               parts: [{ type: 'text' as const, text: msg.content }],
+              createdAt: msg.created_at ? new Date(msg.created_at) : undefined,
             })),
           );
         } else if (!sentInitial.current) {
@@ -202,9 +203,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
       >
         {messages.length === 0 && !isLoading && (
           <Box sx={{ textAlign: 'center', mt: 8 }}>
-            <Typography
-              sx={{ color: 'var(--text-secondary, #888)', fontSize: 14 }}
-            >
+            <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
               Start the conversation...
             </Typography>
           </Box>
@@ -229,6 +228,8 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
                   id: msg.id,
                   role: msg.role as 'user' | 'assistant',
                   content: textContent,
+                  parts: msg.parts as any,
+                  createdAt: (msg as any).createdAt,
                 }}
                 showDivider={showDivider}
                 isLast={i === lastAssistantIdx}
@@ -253,11 +254,9 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
             <CircularProgress
               size={14}
               thickness={5}
-              sx={{ color: 'var(--text-secondary, #999)' }}
+              sx={{ color: 'text.secondary' }}
             />
-            <Typography
-              sx={{ fontSize: 13, color: 'var(--text-secondary, #999)' }}
-            >
+            <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
               Thinking...
             </Typography>
           </Box>
@@ -281,8 +280,9 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
         sx={{
           px: { xs: 2, md: 4 },
           py: 2,
-          borderTop: '1px solid var(--stroke-dark, #F0F0F0)',
-          bgcolor: 'var(--background-primary, #FFFFFF)',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
         }}
       >
         <PromptInput

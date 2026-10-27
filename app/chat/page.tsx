@@ -29,7 +29,8 @@ export default function ChatPage() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (message: string) => {
+  // _files ignored on landing — no chat exists yet to attach to
+  const handleSubmit = (message: string, _files?: File[]) => {
     setError(null);
     startTransition(async () => {
       const result = await createChat(message.slice(0, 60) || 'New Chat');
@@ -65,7 +66,7 @@ export default function ChatPage() {
           sx={{
             fontSize: { xs: 24, md: 32 },
             fontWeight: 700,
-            color: 'var(--text-primary, #1A1A1A)',
+            color: 'text.primary',
             mb: 1,
           }}
         >
@@ -74,7 +75,7 @@ export default function ChatPage() {
         <Typography
           sx={{
             fontSize: { xs: 14, md: 16 },
-            color: 'var(--text-secondary, #666)',
+            color: 'text.secondary',
             maxWidth: 480,
           }}
         >
@@ -136,12 +137,13 @@ export default function ChatPage() {
             disabled={isPending}
             sx={{
               fontSize: 12,
-              bgcolor: 'var(--background-secondary, #F5F5F5)',
-              color: 'var(--text-secondary, #555)',
-              border: '1px solid var(--stroke-dark, #E0E0E0)',
+              bgcolor: 'action.hover',
+              color: 'text.secondary',
+              border: '1px solid',
+              borderColor: 'divider',
               cursor: isPending ? 'default' : 'pointer',
               '&:hover': {
-                bgcolor: 'var(--stroke-dark, #E0E0E0)',
+                bgcolor: 'action.selected',
               },
             }}
           />

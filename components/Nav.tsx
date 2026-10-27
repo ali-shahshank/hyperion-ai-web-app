@@ -166,6 +166,7 @@ export default function ResponsiveAppBar() {
           >
             {/* Them toggle button */}
             <IconButton
+              sx={{ color: 'text.primary' }}
               onClick={toggleTheme}
               disabled={!mounted || !currentMode}
               aria-label={
@@ -173,7 +174,6 @@ export default function ResponsiveAppBar() {
                   ? 'Switch to light mode'
                   : 'Switch to dark mode'
               }
-              sx={{ color: 'text.primary' }}
             >
               {mounted && currentMode === 'dark' ? (
                 <LightModeIcon />
@@ -217,7 +217,9 @@ export default function ResponsiveAppBar() {
                   ? 'Switch to light mode'
                   : 'Switch to dark mode'
               }
-              sx={{ color: 'text.primary' }}
+              // sx={{
+              //   color: 'text.primary',
+              // }}
             >
               {mounted && currentMode === 'dark' ? (
                 <LightModeIcon />

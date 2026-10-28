@@ -1,5 +1,5 @@
-'use client';
-import Button, { ButtonProps } from '@mui/material/Button';
+import Button from '@mui/material/Button';
+import { ButtonProps } from '@mui/material/Button';
 
 interface AppButtonProps extends ButtonProps {
   label: string;
@@ -8,9 +8,8 @@ interface AppButtonProps extends ButtonProps {
 export default function ButtonStandard({ label, ...props }: AppButtonProps) {
   return (
     <Button
-      size="medium"
-      sx={{ borderRadius: 8 }}
       {...props}
+      sx={{ borderRadius: 8 }}
     >
       {label}
     </Button>

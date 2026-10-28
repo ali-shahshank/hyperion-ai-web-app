@@ -1,4 +1,5 @@
 'use client';
+
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -18,9 +19,9 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import AppDrawer from './Drawer';
-import ButtonPrimary from './ButtonPrimary';
 import ButtonStandard from './ButtonStandard';
-import ButtonTertiary from './ButtonTertiary';
+import ButtonPrimary from './ButtonPrimary';
+import ButtonPrimaryOutline from './ButtonPrimaryOutline';
 import Image from 'next/image';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -183,14 +184,14 @@ export default function ResponsiveAppBar() {
             </IconButton>
             {user ? (
               <>
-                <ButtonStandard
+                <ButtonPrimaryOutline
                   label="Chat Now"
                   href="/chat"
                 />
-                <ButtonTertiary
+                {/* <ButtonPrimaryOutline
                   label="Sign Out"
                   onClick={handleSignOut}
-                />
+                /> */}
               </>
             ) : (
               <>
@@ -198,7 +199,7 @@ export default function ResponsiveAppBar() {
                   label="Sign In"
                   href="/sign-in"
                 />
-                <ButtonPrimary
+                <ButtonPrimaryOutline
                   label="Get Started"
                   href="/sign-up"
                 />

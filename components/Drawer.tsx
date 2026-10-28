@@ -12,7 +12,7 @@ import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 import type { Page } from './Nav';
 import ButtonPrimary from './ButtonPrimary';
-import ButtonTertiary from './ButtonTertiary';
+import ButtonPrimaryOutline from './ButtonPrimaryOutline';
 
 interface AppDrawerProps {
   open: boolean;
@@ -81,7 +81,7 @@ export default function AppDrawer({
                 label="Chat Now"
                 href="/chat"
               />
-              <ButtonTertiary
+              <ButtonPrimaryOutline
                 fullWidth
                 label="Sign Out"
                 onClick={onSignOut}
@@ -94,7 +94,7 @@ export default function AppDrawer({
                 label="Chat Now"
                 href="/sign-in"
               />
-              <ButtonTertiary
+              <ButtonPrimaryOutline
                 fullWidth
                 label="Sign Up"
                 href="/sign-up"

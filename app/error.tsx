@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import ButtonSecondary from '@/components/ButtonSecondary';
-import ButtonTertiary from '@/components/ButtonTertiary';
+import ButtonSecondaryOutline from '@/components/ButtonSecondaryOutline';
 
 export default function Error({
   error,
@@ -75,7 +75,7 @@ export default function Error({
               label={'Try Again'}
               onClick={reset}
             />
-            <ButtonTertiary
+            <ButtonSecondaryOutline
               label="Go Home"
               href="/"
             />

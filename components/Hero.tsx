@@ -4,6 +4,7 @@ import BasicChip from '../components/BasicChip';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import ButtonPrimary from './ButtonPrimary';
+import ButtonPrimaryOutline from './ButtonPrimaryOutline';
 
 export default function Hero() {
   return (
@@ -36,7 +37,7 @@ export default function Hero() {
             color: 'text.primary',
           }}
         >
-          The Ultimate AI <Box component="span">Productivity Platform</Box>
+          AI Productivity Platform
         </Typography>
         <Typography
           variant="h2"
@@ -47,7 +48,7 @@ export default function Hero() {
             color: 'text.secondary',
           }}
         >
-          AI workspace built for professionals. One platform — endless
+          The ultimate workspace for knowledge workers. One platform — endless
           possibilities.
         </Typography>
         <ButtonPrimary
@@ -55,6 +56,7 @@ export default function Hero() {
           href="/sign-up"
         />
       </Stack>
+
       {/* Hero image placeholder */}
       <Box
         sx={{

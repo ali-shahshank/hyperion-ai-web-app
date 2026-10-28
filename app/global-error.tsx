@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '@/app/theme/theme';
 import ButtonSecondary from '@/components/ButtonSecondary';
-import ButtonTertiary from '@/components/ButtonTertiary';
+import ButtonSecondaryOutline from '@/components/ButtonSecondaryOutline';
 
 export default function GlobalError({
   error,
@@ -92,7 +92,7 @@ export default function GlobalError({
                       label={'Try Again'}
                       onClick={reset}
                     />
-                    <ButtonTertiary
+                    <ButtonSecondaryOutline
                       label={'Go Home'}
                       href="/"
                     />

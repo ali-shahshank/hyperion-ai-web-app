@@ -22,6 +22,17 @@ interface ChatPageProps {
   params: Promise<{ id: string }>;
 }
 
+interface MessageMetadata {
+  createdAt?: string; // ISO string — Date isn't serialisable across SDK state
+}
+
+interface DbMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  created_at: string | null;
+}
+
 async function filesToParts(files: File[]) {
   return Promise.all(
     files.map(
@@ -87,12 +98,17 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
   const handleSubmit = useCallback(
     async (content: string, files: File[] = []) => {
       setError(null);
-      const fileParts = files.length > 0 ? await filesToParts(files) : [];
-      await createMessage({ chatId: id, role: 'user', content });
-      sendMessage({
-        role: 'user',
-        parts: [...fileParts, { type: 'text', text: content }],
-      });
+      try {
+        const fileParts = files.length > 0 ? await filesToParts(files) : [];
+        await createMessage({ chatId: id, role: 'user', content });
+        sendMessage({
+          role: 'user',
+          parts: [...fileParts, { type: 'text', text: content }],
+          metadata: { createdAt: new Date().toISOString() },
+        });
+      } catch {
+        setError('Failed to send message. Please try again.');
+      }
     },
     [id, sendMessage],
   );
@@ -115,7 +131,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     );
     if (lastUserIdx === -1) return;
     const lastUserContent = getTextContent(
-      messages[lastUserIdx].parts as { type: string; text?: string }[],
+      messages[lastUserIdx].parts as Array<{ type: string; text?: string }>,
     );
     await Promise.all(
       messages.slice(lastUserIdx).map((m) => deleteMessage(m.id)),
@@ -124,44 +140,53 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
     await handleSubmit(lastUserContent);
   }, [messages, setMessages, handleSubmit]);
 
-  // Auth + load existing messages + sessionStorage init
+  // Auth + load existing messages
   useEffect(() => {
     let cancelled = false;
-    getChat(id).then((chatResult) => {
-      if (cancelled) return;
-      if (chatResult?.error || !chatResult?.data) {
-        router.replace('/chat');
-        return;
-      }
-      getMessages(id).then((msgResult) => {
+    const load = async () => {
+      try {
+        const chatResult = await getChat(id);
         if (cancelled) return;
-        const existing = msgResult?.data ?? [];
+        if (chatResult?.error || !chatResult?.data) {
+          router.replace('/chat');
+          return;
+        }
+        const msgResult = await getMessages(id);
+        if (cancelled) return;
+        const existing = (msgResult?.data ?? []) as DbMessage[];
         if (existing.length > 0) {
           setMessages(
-            existing.map((msg: any) => ({
+            existing.map((msg) => ({
               id: msg.id,
-              role: msg.role as 'user' | 'assistant',
+              role: msg.role,
               parts: [{ type: 'text' as const, text: msg.content }],
-              createdAt: msg.created_at ? new Date(msg.created_at) : undefined,
+              metadata: { createdAt: msg.created_at ?? undefined },
             })),
           );
-        } else if (!sentInitial.current) {
-          try {
-            const stored = sessionStorage.getItem(`chat_init_${id}`);
-            if (stored) {
-              sentInitial.current = true;
-              sessionStorage.removeItem(`chat_init_${id}`);
-              handleSubmit(stored);
-            }
-          } catch {}
         }
         setAuthChecked(true);
-      });
-    });
+      } catch {
+        if (!cancelled) router.replace('/chat');
+      }
+    };
+    load();
     return () => {
       cancelled = true;
     };
-  }, [id, router, handleSubmit, setMessages]);
+  }, [id, router, setMessages]);
+
+  // Send initial message from sessionStorage — runs once after auth resolves
+  useEffect(() => {
+    if (!authChecked || sentInitial.current) return;
+    try {
+      const stored = sessionStorage.getItem(`chat_init_${id}`);
+      if (stored) {
+        sentInitial.current = true;
+        sessionStorage.removeItem(`chat_init_${id}`);
+        void handleSubmit(stored);
+      }
+    } catch {}
+  }, [authChecked, id, handleSubmit]);
 
   // Auto-scroll
   useEffect(() => {
@@ -217,7 +242,7 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
           );
           return messages.map((msg, i) => {
             const textContent = getTextContent(
-              msg.parts as { type: string; text?: string }[],
+              msg.parts as Array<{ type: string; text?: string }>,
             );
             const nextRole = messages[i + 1]?.role;
             const showDivider = nextRole === 'user' && msg.role === 'assistant';
@@ -228,8 +253,13 @@ export default function ChatConversationPage({ params }: ChatPageProps) {
                   id: msg.id,
                   role: msg.role as 'user' | 'assistant',
                   content: textContent,
-                  parts: msg.parts as any,
-                  createdAt: (msg as any).createdAt,
+                  parts: msg.parts as Array<
+                    Record<string, unknown> & { type: string }
+                  >,
+                  createdAt: (msg.metadata as MessageMetadata | undefined)
+                    ?.createdAt
+                    ? new Date((msg.metadata as MessageMetadata).createdAt!)
+                    : undefined,
                 }}
                 showDivider={showDivider}
                 isLast={i === lastAssistantIdx}

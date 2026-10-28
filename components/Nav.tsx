@@ -185,7 +185,7 @@ export default function ResponsiveAppBar() {
             {user ? (
               <>
                 <ButtonPrimaryOutline
-                  label="Chat Now"
+                  label="Start Chat"
                   href="/chat"
                 />
                 {/* <ButtonPrimaryOutline

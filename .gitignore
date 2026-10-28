@@ -15,6 +15,10 @@
 
 # testing
 /coverage
+.test
+
+# Vitest reports and artifacts
+.vitest/
 
 # next.js
 /.next/

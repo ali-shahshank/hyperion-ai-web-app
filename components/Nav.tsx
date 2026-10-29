@@ -19,8 +19,6 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import AppDrawer from './Drawer';
-import ButtonStandard from './ButtonStandard';
-import ButtonPrimary from './ButtonPrimary';
 import ButtonPrimaryOutline from './ButtonPrimaryOutline';
 import Image from 'next/image';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -195,10 +193,10 @@ export default function ResponsiveAppBar() {
               </>
             ) : (
               <>
-                <ButtonStandard
+                {/* <ButtonStandard
                   label="Sign In"
                   href="/sign-in"
-                />
+                /> */}
                 <ButtonPrimaryOutline
                   label="Get Started"
                   href="/sign-up"
